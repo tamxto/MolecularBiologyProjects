@@ -12,6 +12,10 @@ Do, Tran H. et al. already did quality control and integrated the data, but my g
 
 Originally, the authors named 5 cell clusters in this dataset, however, I plan to figure out if we can expand it into more cell types so that the data is more specific for generating hypotheses (as shown below). This will allow researchers to more specifically narrow down where a gene of interest is being expressed. After expanding the dataset, I plan to analyze the single cell data in through different graphical representations (shown in the next project).
 
+<img src="MainPageImages/OldUMAP.png" width="128"/>
+<img src="MainPageImages/NewUMAP.png" width="128"/>
+
+
 ![alt text](https://github.com/tamxto/MolecularBiologyProjects/blob/main/MainPageImages/OldUMAP.png)
 ![alt text](https://github.com/tamxto/MolecularBiologyProjects/blob/main/MainPageImages/NewUMAP.png)
 
