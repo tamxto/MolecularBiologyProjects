@@ -31,3 +31,6 @@ These are fundamental packages to understand how we can analyze single cell sequ
 Outside of using Seurat and analyzing single cell, you can analyze other molecular biology data (in this case, we are looking at proteomics data). 
 
 This data holds dear to me because it's something that I created in the lab--starting with the question, then hypothesis, experimental design, troubleshooting, sample prep, and finally obtaining the data to analyze. It's awesome to see wet lab techniques colliding with dry lab. This is what makes science so cool!
+
+<img src="MainPageImages/Neutrophil.png" width="200"/>
+
