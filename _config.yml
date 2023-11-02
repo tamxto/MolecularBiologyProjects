@@ -1,3 +1,5 @@
 title: Molecular Biology Projects by Tam To
+logo: MainPageImages/logo.png
 description: Hello! My name is Tam. Welcome to this small portfolio that demonstrates some of my molecular biology analyses. This encompasses analysis of single cell sequencing and proteomics data.
+show_downloads: true
 theme: jekyll-theme-minimal
