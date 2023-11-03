@@ -17,7 +17,7 @@ Originally, the authors named 5 cell clusters in this dataset, however, I plan t
 <img src="MainPageImages/OldUMAP.png" width="200"/> <img src="MainPageImages/NewUMAP.png" width="250"/>
 
 
-## [Project: Graphical Analysis of New Acne Dataset](https://github.com/tamxto/MolecularBiologyProjects/tree/8cc7362dc15a3c10992f1cf5075de2df8e0b5b5a/Projects/Project_AcneGraphicalAnalyses)
+## [Project: Graphical Analysis of New Acne Dataset](https://github.com/tamxto/MolecularBiologyProjects/tree/2df20131ffdce89098ecf5cdfcc9aabd375e8b70/Projects/Project_AcneGraphicalAnalyses)
 
 This project utilizes the newly expanded lymphocyte dataset constructed from the "Expanding Acne Dataset" project. 
 
