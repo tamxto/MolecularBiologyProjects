@@ -17,7 +17,7 @@ Originally, the authors named 5 cell clusters in this dataset, however, I plan t
 <img src="MainPageImages/OldUMAP.png" width="200"/> <img src="MainPageImages/NewUMAP.png" width="250"/>
 
 
-## Project: Graphical Analysis of New Acne Dataset
+## [Project: Graphical Analysis of New Acne Dataset](https://github.com/tamxto/MolecularBiologyProjects/tree/8cc7362dc15a3c10992f1cf5075de2df8e0b5b5a/Projects/Project_AcneGraphicalAnalyses)
 
 This project utilizes the newly expanded lymphocyte dataset constructed from the "Expanding Acne Dataset" project. 
 
@@ -25,6 +25,7 @@ In this project, I demonstrate how to use various packages and generate differen
 
 These are fundamental packages to understand how we can analyze single cell sequencing data. It's definitely very powerful!
 
+<img src="MainPageImages/proportion_cells.png" width = "200"/>
 
 ## Project: Proteomics Analysis from Mass Spectrometry Data
 
