@@ -2,7 +2,7 @@
 
 The field of molecular biology involves a LOT of data analysis! Here I share with you all a few projects I worked on and analyzed using R and Excel. I hope you find this easy to navigate and use for your own personal means of data analysis as well!
 
-## [Project: Expanding Acne Dataset](https://github.com/tamxto/MolecularBiologyProjects/blob/main/docs/ExpandingAcneData.html)
+## [Project: Expanding Acne Dataset](https://github.com/tamxto/MolecularBiologyProjects/tree/f07e3bbe88f29d288ce43d77a79c74069a921433/Projects/Project_ExpandingAcneDataset)
 
 For this project, I'm working on expanding a publicly available dataset based off a paper that compared normal vs. acne skin using single-cell RNA sequencing (scRNAseq). scRNAseq is an effective tool for analyzing genetic and molecular profiles of individual cells. This allows us to study changes in specific cell types based on the types of disease lesions. We can know which genes are differentially expressed in each cell type and each condition. In this case, we can know how gene expression differs between cell types in normal vs. acne skin lesions. It's a powerful way for elucidating unknown pathogeneses and identifying potential targets for therapeutics.
 
