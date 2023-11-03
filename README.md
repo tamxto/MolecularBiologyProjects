@@ -25,7 +25,7 @@ In this project, I demonstrate how to use various packages and generate differen
 
 These are fundamental packages to understand how we can analyze single cell sequencing data. It's definitely very powerful!
 
-<img src="MainPageImages/proportion_cells.png" width = "200"/>
+<img src="MainPageImages/proportion_cells.png" width = "200"/> <img src="MainPageImages/Th17volcanoplot.png" width = "200"/> 
 
 ## Project: Proteomics Analysis from Mass Spectrometry Data
 
@@ -33,5 +33,5 @@ Outside of using Seurat and analyzing single cell, you can analyze other molecul
 
 This data holds dear to me because it's something that I created in the lab--starting with the question, then hypothesis, experimental design, troubleshooting, sample prep, and finally obtaining the data to analyze. It's awesome to see wet lab techniques colliding with dry lab. This is what makes science so cool!
 
-<img src="MainPageImages/Neutrophil.png" width="200"/>
+<img src="MainPageImages/Neutrophil.png" width="200"/> <img src="MainPageImages/VennDiagram.png" width="200"/>
 
