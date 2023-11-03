@@ -25,7 +25,7 @@ In this project, I demonstrate how to use various packages and generate differen
 
 These are fundamental packages to understand how we can analyze single cell sequencing data. It's definitely very powerful!
 
-<img src="MainPageImages/proportion_cells.png" width = "200"/> <img src="MainPageImages/Th17volcanoplot.png" width = "240"/> 
+<img src="MainPageImages/proportion_cells.png" width = "200"/> <img src="MainPageImages/Th17volcanoplot.png" width = "235"/> 
 
 ## Project: Proteomics Analysis from Mass Spectrometry Data
 
