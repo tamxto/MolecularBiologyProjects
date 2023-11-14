@@ -11,7 +11,7 @@ Here I go over what to do when you get back raw files from the sequencing core! 
 
 This was probably what I struggled with the most when I first started since it's a bunch of "figuring out what works with your laptop/PC" kinda deal. Otherwise, everything is straightforward once you have everything downloaded and the code ready to go!
 
-<img src="MainPageImages/featurecounts.png" width = "200"/> <img src="MainPageImages/tsne.png" width = "200"/>
+<img src="MainPageImages/featurecounts.png" width = "200"/> <img src="MainPageImages/tsne.png" width = "400"/>
 
 
 ## [Project: Expanding Acne Dataset](https://github.com/tamxto/MolecularBiologyProjects/tree/f07e3bbe88f29d288ce43d77a79c74069a921433/Projects/Project_ExpandingAcneDataset)
