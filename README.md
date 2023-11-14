@@ -45,5 +45,7 @@ Outside of using Seurat and analyzing single cell, you can analyze other molecul
 
 This data holds dear to me because it's something that I created in the lab--starting with the question, then hypothesis, experimental design, troubleshooting, sample prep, and finally obtaining the data to analyze. It's awesome to see wet lab techniques colliding with dry lab. This is what makes science so cool!
 
+Currently still working on analysis...
+
 <img src="MainPageImages/NETsIFpng.png" width="200"/> <img src="MainPageImages/AA1AA4heatmap.png" width="200"/>
 
