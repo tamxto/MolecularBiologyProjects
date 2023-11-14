@@ -2,13 +2,16 @@
 
 The field of molecular biology involves a LOT of data analysis! Here I share with you all a few projects I worked on and analyzed using R and Excel. I hope you find this easy to navigate and use for your own personal means of data analysis as well!
 
+**Note: All of the html files are too big to view from Github. I recommend downloading the rmd files and viewing it in RStudio. For the first project, you can knit to html from there for easier navigation. For the second and third projects, you can also view the pdf versions to see the graphs (make sure you check the additional pages at the bottom).
+
+
 ## [Project: Sequence Alignment, Preprocessing, and Quality Control of scRNAseq Data](https://github.com/tamxto/MolecularBiologyProjects/tree/main/Projects/Project_SequencingQualityControl)
 
 Here I go over what to do when you get back raw files from the sequencing core! How to download/upload the large data sets (Unix/Linux Command line), align the sequences, check for quality, then preprocess and normalize the data in R.
 
 This was probably what I struggled with the most when I first started since it's a bunch of "figuring out what works with your laptop/PC" kinda deal. Otherwise, everything is straightforward once you have everything downloaded and the code ready to go!
 
-
+<img src="MainPageImages/featurecounts.png" width = "200"/> <img src="MainPageImages/tsne.png" width = "200"/>
 
 
 ## [Project: Expanding Acne Dataset](https://github.com/tamxto/MolecularBiologyProjects/tree/f07e3bbe88f29d288ce43d77a79c74069a921433/Projects/Project_ExpandingAcneDataset)
@@ -42,5 +45,5 @@ Outside of using Seurat and analyzing single cell, you can analyze other molecul
 
 This data holds dear to me because it's something that I created in the lab--starting with the question, then hypothesis, experimental design, troubleshooting, sample prep, and finally obtaining the data to analyze. It's awesome to see wet lab techniques colliding with dry lab. This is what makes science so cool!
 
-<img src="MainPageImages/Neutrophil.png" width="200"/> <img src="MainPageImages/AA5AA8VennDiagram.png" width="200"/>
+<img src="MainPageImages/NETsIFpng.png" width="200"/> <img src="MainPageImages/AA1AA4Heatmap.png" width="200"/>
 
