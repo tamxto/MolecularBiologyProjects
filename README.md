@@ -2,7 +2,7 @@
 
 The field of molecular biology involves a LOT of data analysis! Here I share with you all a few projects I worked on and analyzed using R and Excel. I hope you find this easy to navigate and use for your own personal means of data analysis as well!
 
-**Note: All of the html files are too big to view from Github. I recommend downloading the rmd files and viewing it in RStudio. For the first project, you can knit to html from there for easier navigation. For the second and third projects, you can also view the pdf versions to see the graphs (make sure you check the additional pages at the bottom).
+**Note: All of the html files are too big to view from Github. I recommend downloading the rmd files and loading it in RStudio then knit the html version to view it in a more visually pleasing format!
 
 
 ## [Project: Sequence Alignment, Preprocessing, and Quality Control of scRNAseq Data](https://github.com/tamxto/MolecularBiologyProjects/tree/main/Projects/Project_SequencingQualityControl)
