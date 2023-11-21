@@ -3,31 +3,39 @@ title: "Expanding Acne Dataset"
 author: "TamTo"
 date: "2023-10-07"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
   word_document: default
 ---
 
+# Introduction
+
 I'm working with a Seurat object for this analysis. Seurat objects are a representation of single-cell expression data for R, where we can analyze cell types and feature level (gene expression) of our sample conditions.
 
-```{r setup, include=TRUE}
-knitr::opts_chunk$set(echo = TRUE)
+In this project, I'm identifying cell clusters from the lymphocyte dataset using key markers. In the previous analysis of this dataset, only 5 cell clusters were identified. I'm going to see how we can make this more specific.
+
+As a brief overview, this dataset includes human skin tissue biopsies from normal nonlesional skin and acne lesional skin.
+
+I've downloaded the lymphocyte dataset for this project. More information on this data and the paper published is available [here](https://github.com/modlab246/scRNAacne).
+
+
+```{r setup, include=TRUE, eval = F}
 
 library(tidyverse) # load the tidyverse
 library(Seurat) # we need this to work with Seurat objects
 
 ```
 
-```{r Load Data}
+```{r Load Data, eval = F}
 
 # Check the working directory.
 getwd()
 
-# Setting the wd to where the file is located (in this case it's saved on my desktop).
-setwd("/Users/tamto/Desktop")
+# Setting the wd to where the file is located.
+setwd("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset")
 
 # Time to load the data in our global environment!
-load("/Users/tamto/Desktop/soupx62.lymphocyte2.Rdata")
+load("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/soupx62.lymphocyte2.Rdata")
 
 # View the first 6 rows of the dataset.
 head(soupx62.lymphocyte2, 6)
@@ -37,9 +45,15 @@ view(soupx62.lymphocyte2)
 
 ```
 
-```{r Confirm Quality Control of the Published Dataset}
 
-# We have to be cautious of mitochondrial RNA because the mitochondria has its own RNA that can get mixed up with the RNA of our cells of interest. The PercentageFeatureSet() functions allows us to calculate the percentage of counts originating from features that contain our pattern of interest. In this case, we want to see how many genes are mitochondrial (i.e. start with "MT").
+# Checking Quality Control Metrics
+
+I like to just to double check the QC metrics of this data (includes mitochondrial content, feature count, etc.). 
+
+We have to be cautious of mitochondrial RNA because the mitochondria has its own RNA that can get mixed up with the RNA of our cells of interest. The PercentageFeatureSet() functions allows us to calculate the percentage of counts originating from features that contain our pattern of interest. In this case, we want to see how many genes are mitochondrial (i.e. start with "MT").
+
+
+```{r Confirm Quality Control of the Published Dataset, eval = FALSE}
 
 soupx62.lymphocyte2[["percent.mito"]] <- PercentageFeatureSet(soupx62.lymphocyte2, pattern = "^MT-")
 
@@ -51,13 +65,25 @@ hist(soupx62.lymphocyte2[["percent.mito"]]$percent.mito)
 
 VlnPlot(soupx62.lymphocyte2, features = c("nFeature_RNA", "nCount_RNA", "percent.mito"), ncol = 3)
 
-# These plots show that we have mostly around 1000 genes, less than 10,000 gene count, and less than 15% mitochondrial RNA content. This confirms that the dataset has been quality controlled.
+```
+
+```{r, echo = FALSE}
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/MThist.png")
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/Vlnplot_QC_metrics.png")
 
 ```
 
-```{r Dimensionality Reduction}
 
-# This dataset has also already been normalized and scaled to make the values more comparable to each other. One problem is that our data is multi-dimensional (many genes) so it's not practical to analyze data with so many dimensions. Here I'm using principal component analysis (PCA) for dimensionality reduction using the RunPCA function on the Seurat object. 
+These plots show that we have mostly around 1000 genes, less than 10,000 gene count, and less than 15% mitochondrial RNA content. 
+
+
+# Normalization and Dimensionality Reduction
+
+This dataset has also already been normalized and scaled to make the values more comparable to each other. One problem is that our data is multi-dimensional (many genes) so it's not practical to analyze data with so many dimensions. Here I'm using principal component analysis (PCA) for dimensionality reduction using the RunPCA function on the Seurat object. 
+
+
+```{r Dimensionality Reduction, eval=FALSE}
 
 PCALymphocyte <- RunPCA(soupx62.lymphocyte2, features = VariableFeatures(object = soupx62.lymphocyte2))
 
@@ -66,31 +92,73 @@ PCALymphocyte <- RunPCA(soupx62.lymphocyte2, features = VariableFeatures(object 
 print(PCALymphocyte[['pca']], dims = 1:15, nfeatures = 5)
 VizDimLoadings(PCALymphocyte, dims = 1:15, reduction = 'pca')
 
-# DimHeatmap() function allows to explore heterogeneity in the dataset and allows us to decide which PCs to include for downstream analyses.
+```
+
+
+```{r echo = FALSE}
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/VizDim_PCA.png")
+
+```
+
+
+```{r eval = F}
+
+# DimHeatmap() function allows to explore heterogeneity in the dataset and decide which PCs to include for downstream analyses.
 
 DimHeatmap(PCALymphocyte, dims = 1:15, cells = 500, balanced = TRUE)
 
-# We can create a JackStraw plot using the JackStrawPlot() function to verify which PCs are significant. JackStraw() and ScoreJackStraw() compares the distribution of p-values for each PC with a uniform distribution (dashed line in the plot). Significant PCs show a strong enrichment of features with low p-values (solid curves in the plot). The closer / more similar they are to the dashed line, the less meaningful/significant they are.
+```
 
+```{r echo = FALSE}
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/DimHeatmap_PCA.png")
+
+```
+
+We can create a JackStraw plot using the JackStrawPlot() function to verify which PCs are significant. JackStraw() and ScoreJackStraw() compare the distribution of p-values for each PC with a uniform distribution (dashed line in the plot). Significant PCs show a strong enrichment of features with low p-values (solid curves in the plot). The closer / more similar they are to the dashed line, the less meaningful/significant they are.
+
+
+```{r eval = F}
 PCALymphocyte <- JackStraw(PCALymphocyte, num.replicate = 100)
 PCALymphocyte <- ScoreJackStraw(PCALymphocyte, dims = 1:15)
 JackStrawPlot(PCALymphocyte, dims = 1:15)
+```
 
-# The plot shows all 15 lines are above the dashed line, but PC 12-15 start to deviate a bit. I'm going to cut it off at PC 11.
+```{r echo = FALSE}
 
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/jackstraw.png")
+
+```
+
+The plot shows all 15 lines are above the dashed line, but PC 12-15 start to deviate a bit. I'm going to cut it off at PC 11.
+
+
+```{r eval = F}
 JackStrawPlot(PCALymphocyte, dims = 1:11)
 
 # We can verify this another way using an Elbow plot with the ElbowPlot() function that ranks PCs based on the percentage of variance. 
 
 ElbowPlot(PCALymphocyte)
 
-# We see there is also an elbow at PC 11 so it verifies the cut off I'm choosing here.
+```
+
+
+```{r echo = F}
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/elbow.png")
 
 ```
 
-```{r Generating the Uniform Manifold Approximation Projection (UMAP)}
+We see there is also an elbow at PC 11 so it verifies the cut off I'm choosing here.
 
-# This is a dimensionality reduction technique used for visualization. It captures the manifold (topology/shape) of the data organization in higher dimensions and embeds a neighborhood of points. This uses the K-NN/KNN (K-nearest neighbor) algorithm to find similar gene expression profiles between 2 cells.
+
+# Generating the UMAP
+
+This is a dimensionality reduction technique used for visualization. It captures the manifold (topology/shape) of the data organization in higher dimensions and embeds a neighborhood of points. This uses the K-NN/KNN (K-nearest neighbor) algorithm to find similar gene expression profiles between 2 cells.
+
+
+```{r Generating the Uniform Manifold Approximation Projection (UMAP), eval = F}
 
 NewLymphocyteClusters <- FindNeighbors(PCALymphocyte, dims = 1:11)
 NewLymphocyteClusters <- FindClusters(PCALymphocyte, resolution = 0.5)
@@ -98,16 +166,27 @@ NewLymphocyteClusters <- FindClusters(PCALymphocyte, resolution = 0.5)
 # Now we can verify what the cluster IDs of the first 5 cells are and that we have a total of 11 clusters since that was our cut-off for cell types. 
 head(Idents(NewLymphocyteClusters), 5)
 
-# Looks like we have 11 total levels (cell types) and they are named by number. We can create a UMAP to view the graph-based clusters and verify these cell types cluster on the map.
-
 NewLymphocyteClusters <- RunUMAP(NewLymphocyteClusters, reduction = "pca", dims = 1:11)
 DimPlot(NewLymphocyteClusters, reduction = "umap")
 
 ```
 
-```{r Identify Cluster Markers}
+Looks like we have 11 total levels (cell types) and they are named by number. We can create a UMAP to view the graph-based clusters and verify these cell types cluster on the map. Next is identifying key markers for each cluster to name the cell type.
 
-# Now we need to find out what each of these cells are. We can do this by finding out their top genes with FindAllMarkers() and deduce which cells they are based on the expression of these genes. I like to find the top 10 markers of each cluster, min.pct argument is used to restrict to features detected in a minimum fraction of the chosen percentage of cells (i.e. here it has to be expressed in at least 25% of the cells). I chose a minimum log2 fold change threshold as 0.25 for average expression of a gene in one cluster relative to other clusters (i.e. logfc.threshold = 0.25).
+
+```{r echo = F}
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/UMAP.png")
+
+```
+
+
+# Identifying Cluster Key Markers
+
+Now we need to find out what each of these cells are. We can do this by finding out their top genes with FindAllMarkers() and deduce which cells they are based on the expression of these genes. I like to find the top 10 markers of each cluster, min.pct argument is used to restrict to features detected in a minimum fraction of the chosen percentage of cells (i.e. here it has to be expressed in at least 25% of the cells). I chose a minimum log2 fold change threshold as 0.25 for average expression of a gene in one cluster relative to other clusters (i.e. logfc.threshold = 0.25).
+
+
+```{r Identify Cluster Markers, eval = F}
 
 cluster_markers <- FindAllMarkers(NewLymphocyteClusters,
                                   only.pos = TRUE, 
@@ -124,10 +203,25 @@ top10markers <- cluster_markers %>%
   group_by(cluster) %>%
   top_n(n = 10, wt = avg_log2FC)
 
+```
+
+
+```{r eval = F}
+
 DoHeatmap(NewLymphocyteClusters, features = top10markers$gene)
 
-# Since the heatmap can get quite overwhelming with a lot of clusters, we can look at one cluster at a time. I'm going to start with cluster 0 and then this would be repeated for each cluster to find out their top genes.
+```
 
+```{r echo = F}
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/numberheatmap.png")
+
+```
+
+Since the heatmap can get quite overwhelming with a lot of clusters, we can look at one cluster at a time. I'm going to start with cluster 0 and then this would be repeated for each cluster to find out their top genes.
+
+
+```{r eval = F}
 cluster0.markers <- FindMarkers(NewLymphocyteClusters, ident.1 = 0, min.pct = 0.25)
 head(cluster0.markers, n = 10)
 
@@ -136,12 +230,32 @@ head(cluster0.markers, n = 10)
 cluster8.markers <- FindMarkers(NewLymphocyteClusters, ident.1 = 8, ident.2 = 2, min.pct = 0.25)
 head(cluster8.markers, n = 10)
 
-# I'm more of a visual analyzer, so I recommend making violin plots or dot plots of unique genes that are known to be specific for each cell type. In this example, FOXP3 is a gene specific for T regulatory cells (Treg). Looks like cluster 3 is a Treg cell cluster. We can then repeat this with more unique genes to find out the remaining cell types for each cluster.
+# I'm more of a visual analyzer, so I recommend making violin plots or dot plots of unique genes that are known to be specific for each cell type. In this example, FOXP3 is a gene specific for T regulatory cells (Treg). 
 
 VlnPlot(NewLymphocyteClusters, features = c("FOXP3"))
 DotPlot(NewLymphocyteClusters, features = c("FOXP3"), cols = c("blue", "red"))
 
-# Although we might be certain of a cluster based on specific genes, we also need to verify that these cell types are actually true by comparing the genes across all clusters. We can do this by plotting genes and clusters using the scCustomize package. 
+```
+
+```{r echo = F}
+
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/vlnplotfoxp3.png")
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/dotplotfoxp3.png")
+
+
+```
+
+Looks like cluster 3 is a Treg cell cluster. We can then repeat this with more unique genes to find out the remaining cell types for each cluster.
+
+
+# Verifying Clusters
+
+Although we might be certain of a cluster based on specific genes, we also need to verify that these cell types are actually true by comparing the genes across all clusters. We can do this by plotting genes and clusters using the scCustomize package. 
+
+
+```{r Verifying Clusters, eval = F}
 
 # install.packages("scCustomize")
 library(scCustomize)
@@ -152,10 +266,22 @@ DotPlot_scCustom(seurat_object = NewLymphocyteClusters, features = genes, flip_a
 
 ```
 
-```{r Renaming the Clusters}
+```{r echo = F}
 
-# Now I've found out what each cluster may be based on their specific genes. It's time to rename the clusters with their correct cell type.
 
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/stackeddotplot1.png")
+
+
+```
+
+Each cluster seems to have their own high expression of genes that correlate to certain cell types. Viewing it on a dotplot makes it easy to visualize and confirm our findings!
+
+
+# Renaming the Clusters
+
+Now I've found out what each cluster may be based on their specific genes. It's time to rename the clusters with their correct cell type.
+
+```{r Renaming the Clusters, eval = F}
 new.cluster.ids <- c("EM CD4 T cell", "Naive CD4 T cell", "EM CD8 T cell", "Treg", "Late EM CD4 T cell", "gd T cell / ILC ??", "Stem-like CD8 T cell", "B cell", "Late EM CD8 / gd T cell ??", "NK cell", "Th17 cell")
 
 names(new.cluster.ids) <- levels(NewLymphocyteClusters)
@@ -165,7 +291,18 @@ NewLymphocyteClusters <- RenameIdents(NewLymphocyteClusters, new.cluster.ids)
 # View the new UMAP with the updated clusters!
 DimPlot(NewLymphocyteClusters, reduction = 'umap', label = TRUE, pt.size = 0.4)
 
-# I want to reorder the cell types so that it's easier to analyze when we make downstream analyses. Make the new ordered cell types the active identities.
+```
+
+```{r echo = F}
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/updatedUMAP.png")
+
+```
+
+I want to reorder the cell types so that it's easier to analyze when we make downstream analyses. Make the new ordered cell types the active identities.
+
+
+```{r eval = F}
 
 NewLymphocyteClusters@active.ident <- factor(NewLymphocyteClusters@active.ident,
                                           levels = c("Naive CD4 T cell",
@@ -197,14 +334,27 @@ DotPlot_scCustom(seurat_object = NewLymphocyteClusters, features = genes, flip_a
 
 ```
 
-```{r Save the data}
+```{r echo = F}
 
-# save(NewLymphocyteClusters, file = "NewLymphocyteClusters.Rdata")
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/updatedheatmap.png")
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/updatedstackeddotplot.png")
+
+
+```
+
+# Saving the Data
+
+This data can now be used for downstream analyses (shown in the next project).
+
+```{r Save the data, eval = FALSE}
+
+save(NewLymphocyteClusters, file = "NewLymphocyteClusters.Rdata")
 
 ```
 
 
-CONCLUSION
+# CONCLUSION
 
 Upon expanding this dataset, we were able to go from 5 clusters to 11 clusters ("Naive CD4 T cell", "EM CD4 T cell", "Late EM CD4 T cell", "Treg", "Th17 cell", "Stem-like CD8 T cell", "EM CD8 T cell", "Late EM CD8 / gd T cell ??", "gd T cell / ILC ??", "NK cell", "B cell"). There may be gd T cells and ILCs mixed within the same cluster because the ILC cluster seems to have cells expressing genes that represent gd T cells (TRDC, TRGC2, TRGC1) when they should not be positive for these genes. Moreover, gd T cells may be present in the Late EM CD8 T cell cluster as well due to similar functional gene signatures. In literature, these cell types have been shown to be quite similar, so we would need a dataset with lots more cells to make a more concrete verification that those are the correctly named clusters.
 
