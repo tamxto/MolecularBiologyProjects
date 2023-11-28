@@ -44,7 +44,7 @@ These are fundamental packages to understand how we can analyze single cell sequ
 
 Here we explore pseudotime trajectories and cell-cell interactions/communications. You can get a bunch of information from doing these analyses. In this project, I go over a few graphs and information we can generate from monocle3 and CellChat.
 
-<img src="MainPageImages/ccl5_ccr4 copy.png" width="200"/>
+<img src="MainPageImages/ccl5_ccr4 copy.png" width="400"/>
 
 
 ## Project: Proteomics Analysis from Mass Spectrometry Data
