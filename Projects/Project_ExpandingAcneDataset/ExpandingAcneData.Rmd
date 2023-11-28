@@ -31,11 +31,11 @@ library(Seurat) # we need this to work with Seurat objects
 # Check the working directory.
 getwd()
 
-# Setting the wd to where the file is located.
+# Setting the wd.
 setwd("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset")
 
 # Time to load the data in our global environment!
-load("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/soupx62.lymphocyte2.Rdata")
+load("/Users/tamto/Desktop/soupx62.lymphocyte2.Rdata")
 
 # View the first 6 rows of the dataset.
 head(soupx62.lymphocyte2, 6)
@@ -67,7 +67,7 @@ VlnPlot(soupx62.lymphocyte2, features = c("nFeature_RNA", "nCount_RNA", "percent
 
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, out.width = "400px"}
 knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/MThist.png")
 
 knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/Vlnplot_QC_metrics.png")
@@ -95,7 +95,7 @@ VizDimLoadings(PCALymphocyte, dims = 1:15, reduction = 'pca')
 ```
 
 
-```{r echo = FALSE}
+```{r echo = FALSE, out.width = "400px"}
 
 knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/VizDim_PCA.png")
 
@@ -110,7 +110,7 @@ DimHeatmap(PCALymphocyte, dims = 1:15, cells = 500, balanced = TRUE)
 
 ```
 
-```{r echo = FALSE}
+```{r echo = FALSE, out.width = "400px"}
 
 knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/DimHeatmap_PCA.png")
 
@@ -125,7 +125,7 @@ PCALymphocyte <- ScoreJackStraw(PCALymphocyte, dims = 1:15)
 JackStrawPlot(PCALymphocyte, dims = 1:15)
 ```
 
-```{r echo = FALSE}
+```{r echo = FALSE, out.width = "400px"}
 
 knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/jackstraw.png")
 
@@ -144,7 +144,7 @@ ElbowPlot(PCALymphocyte)
 ```
 
 
-```{r echo = F}
+```{r echo = F, out.width = "400px"}
 
 knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/elbow.png")
 
@@ -174,7 +174,7 @@ DimPlot(NewLymphocyteClusters, reduction = "umap")
 Looks like we have 11 total levels (cell types) and they are named by number. We can create a UMAP to view the graph-based clusters and verify these cell types cluster on the map. Next is identifying key markers for each cluster to name the cell type.
 
 
-```{r echo = F}
+```{r echo = F, out.width = "400px"}
 
 knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/UMAP.png")
 
@@ -212,7 +212,7 @@ DoHeatmap(NewLymphocyteClusters, features = top10markers$gene)
 
 ```
 
-```{r echo = F}
+```{r echo = F, out.width = "400px"}
 
 knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/numberheatmap.png")
 
@@ -237,7 +237,7 @@ DotPlot(NewLymphocyteClusters, features = c("FOXP3"), cols = c("blue", "red"))
 
 ```
 
-```{r echo = F}
+```{r echo = F, out.width = "400px"}
 
 
 knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/vlnplotfoxp3.png")
@@ -266,7 +266,7 @@ DotPlot_scCustom(seurat_object = NewLymphocyteClusters, features = genes, flip_a
 
 ```
 
-```{r echo = F}
+```{r echo = F, out.width = "400px"}
 
 
 knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/stackeddotplot1.png")
@@ -293,7 +293,7 @@ DimPlot(NewLymphocyteClusters, reduction = 'umap', label = TRUE, pt.size = 0.4)
 
 ```
 
-```{r echo = F}
+```{r echo = F, out.width = "400px"}
 
 knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/updatedUMAP.png")
 
@@ -334,7 +334,7 @@ DotPlot_scCustom(seurat_object = NewLymphocyteClusters, features = genes, flip_a
 
 ```
 
-```{r echo = F}
+```{r echo = F, out.width = "400px"}
 
 knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ExpandingAcneDataset/ProjectImages/updatedheatmap.png")
 

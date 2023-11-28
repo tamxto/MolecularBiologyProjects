@@ -3,14 +3,17 @@ title: "Graphical Analyses of Expanded Acne Dataset"
 author: "TamTo"
 date: "2023-10-07"
 output:
+  pdf_document: default
   word_document: default
   html_document: default
 ---
 
-I'm working with the acne dataset I expanded (NewLymphocyteClusters Seurat object). Here we will analyze the data in various graphical forms to let us generate hypotheses and confirm results we may see in wet lab experiments. 
+# Introduction
+
+I'm working with the acne dataset I expanded from the last project (NewLymphocyteClusters Seurat object). Here we will analyze the data in various graphical forms to let us generate hypotheses and confirm results we may see in wet lab experiments. 
 
 
-```{r setup, include=TRUE}
+```{r setup, eval = T, message = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse) # load the tidyverse
@@ -22,8 +25,8 @@ library(ggrepel) # helps with text label positioning
 # Check the working directory.
 getwd()
 
-# Setting the wd to where the file is located (in this case it's saved on my desktop).
-setwd("/Users/tamto/Desktop")
+# Setting the wd.
+setwd("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_AcneGraphicalAnalyses")
 
 # Time to load the data in our global environment.
 load("/Users/tamto/Desktop/NewLymphocyteClusters.Rdata")
@@ -33,9 +36,11 @@ view(NewLymphocyteClusters)
 
 ```
 
+# Visualizing Cell Types and Gene Expression by feature maps, dot plots, and violin plots}
+
 To easily find genes of interest and their expression level, you can make feature maps, dot plots, etc.
 
-```{r Visualizing Cell Types and Gene Expression by feature maps, dot plots, and violin plots}
+```{r out.width = "400px"}
 
 # View the UMAP of our Seurat object to look at our cell types again.
 DimPlot(object = NewLymphocyteClusters, reduction = "umap", label = TRUE, label.size = 3)
@@ -67,9 +72,11 @@ VlnPlot(NewLymphocyteClusters, features, stack = TRUE, sort = FALSE, flip = TRUE
 
 ```
 
+# Subsetting Clusters
+
 Sometimes, we only want to look at certain cell types (ex: only CD4s, or only CD8s, etc.) and analyze gene expression in only those clusters. In this case, we have to subset them from the rest of the clusters. Let's say we're only interested in the CD8 clusters.
 
-```{r Subsetting Clusters}
+```{r Subsetting Clusters, eval = F}
 
 # Look at what the active cell identities are and check the order of the levels
 Idents(object = NewLymphocyteClusters)
@@ -86,10 +93,21 @@ VlnPlot(object = CD8subset, features = c("PRF1", "GZMB"))
 
 ```
 
+
+```{r echo = F, out.width = "400px"}
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_AcneGraphicalAnalyses/images/subset.png")
+
+
+```
+
+
+# Cell Proportions
+
 We can also visualize the data and compare cell proportions in each lesion (i.e. whether cell types may be differentially expressed in frequency). To do so, we can use the dittoSeq package to generate stacked bar plots. You can install the package through installing the BiocManager package (ensures the appropriate Bioconductor installation is compatible with the right version of R).
 
 
-```{r Cell Proportions}
+```{r Cell Proportions, out.width = "400px"}
 
 # if (!require("BiocManager", quietly = TRUE))
 #    install.packages("BiocManager")
@@ -120,11 +138,32 @@ dittoBarPlot(
     main = NULL
     )
 
+# I find it useful actually view the cell proportions by comparing lesional with nonlesional. 
+
+dittoBarPlot(
+    object = NewLymphocyteClusters,
+    var = "celltype",
+    group.by = "stim",
+    var.labels.reorder = c(7, 2, 5, 11, 10, 9, 3, 6, 4, 8, 1),
+    main = NULL
+    )
+
 ```
+
+With this bar plot, we can see that the lesional has fewer Late EM CD4 T cells, more Th17 cells, fewer Stem-like CD8 T cells, etc. in frequency compared to the nonlesional.
+
+More useful information on the dittoSeq package can be found [here](https://bioconductor.org/packages/devel/bioc/vignettes/dittoSeq/inst/doc/dittoSeq.html).
+
+
+# Volcano Plots
 
 Let's say we want find the most differentially expressed genes in each lesion by cell type (i.e. which genes are most upregulated in the lesion). We can visually represent this by creating a volcano plot and plot the log2 fold change against negative log of the p-value (to also see which genes are the most statistically significantly upregulated). Let's take the Th17 cell cluster, for example.
 
-```{r Volcano Plots}
+## Volcano Plots Using ggplot2
+
+More information on how to edit volcano plots in ggplot2 can be found [here](https://erikaduan.github.io/posts/2021-01-02-volcano-plots-with-ggplot2/).
+
+```{r Volcano Plots, out.width = "400px"}
 
 # Find all the markers in the gd T cell/ ILC subset.
 Th17cell <- FindMarkers(NewLymphocyteClusters, ident.1 = 'Th17 cell')
@@ -145,21 +184,68 @@ colnames(Th17table)
 
 Legend <- ifelse(Th17table$p_val_adj < 0.05, "Significant", "Not Significant")
 
-ggplot(Th17table, aes(x = avg_log2FC, y = -log10(p_val_adj))) +
-  geom_point(aes(color = Legend), alpha = 0.6) +
-  scale_color_manual(values = c("Significant" = "red", "Not Significant" = "black")) +
+ggplot(Th17table, aes(x = avg_log2FC, 
+                      y = -log10(p_val_adj))) + 
+  geom_point(aes(color = Legend), 
+             alpha = 0.6) +
+  scale_color_manual(values = c("Significant" = "red", "Not Significant" = "black")) + 
   theme(text = element_text(size = 10)) +
-  labs(x = "Log2(Fold Change)", y = "-log10(P-value)", title = "Differentially Expressed Genes in Th17 Cells of Nonlesional vs. Lesional Acne Skin") +
- geom_label_repel(aes(label = gene), min.segment.length = unit(.1, 'lines'), force = 10, label.size = 0, max.overlaps = 7)
-
+  labs(x = "Log2(Fold Change)", 
+       y = "-log10(P-value)", 
+       title = "Differentially Expressed Genes in Th17 Cells of Nonlesional vs. Lesional Acne Skin") +
+  scale_x_continuous(breaks = c(seq(-10, 10, 2)),
+                     limits = c(-10, 10)) +
+  geom_hline(yintercept = -log10(0.05),
+             linetype = "dashed") + 
+  geom_vline(xintercept = c(log2(0.5), log2(2)),
+             linetype = "dashed") +
+  geom_label_repel(aes(label = gene)) 
+ 
 # Here, we now see that IL17, CCL20, CXCL13, IL16, etc. are some genes that are more highly expressed in the Th17 cell cluster in the lesional sample compared to these cells in nonlesional, which is consistent with what has been shown in literature.
 
 ```
 
-Gene Ontology (GO) analysis is a way for use to analyze how genes from our samples translate to biological processes (i.e. we can see which biological processes may be upregulated in acne lesions compared to nonlesions.) We need to first install a few packages such as topGO (tests GO terms), clusterProfiler (visualize profiles of genomic coordinates), AnnotationDbi (queries SQLite-based annotation data), and org.Hs.eg.db (human genome wide annotation).
+## Volcano Plots Using EnhancedVolcano
+
+Another method for making volcano plots to show differential gene expression is by using [EnhancedVolcano](https://bioconductor.org/packages/devel/bioc/vignettes/EnhancedVolcano/inst/doc/EnhancedVolcano.html).
 
 
-```{r Gene Ontology Analysis in R}
+```{r, out.width = "400px"}
+
+# BiocManager::install('EnhancedVolcano')
+
+library(EnhancedVolcano)
+
+# In this case, we use the table we generated from before that we used for volcano plots with ggplot2, however, we have to edit the rownames so that they are names of the genes and not just row numbers.
+
+Th17table_edit_rows <- Th17table %>% 
+  remove_rownames %>% 
+  column_to_rownames(var="gene") 
+
+EnhancedVolcano(Th17table_edit_rows,
+                lab = rownames(Th17table_edit_rows),
+                x = 'avg_log2FC',
+                y = 'p_val_adj',
+                title = 'Differentially Expressed Genes in Th17 cells of Nonlesional vs. Lesional Acne Skin',
+                pCutoff = 10e-6,
+                FCcutoff = 2,
+                pointSize = 2.0,
+                labSize = 6.0,
+                legendPosition = 'right',
+                legendLabSize = 12,
+                legendIconSize = 4.0
+                )
+
+```
+
+EnhancedVolcano allows for easier adjustments to be made for data visualizations, but either way works for constructing volcano plots.
+
+# Gene Ontology
+
+Gene Ontology (GO) analysis is a way for use to analyze how genes from our samples translate to biological processes (i.e. we can see which biological processes may be upregulated in acne lesions compared to nonlesions). We need to first install a few packages such as topGO (tests GO terms), clusterProfiler (visualize profiles of genomic coordinates), AnnotationDbi (queries SQLite-based annotation data), and org.Hs.eg.db (human genome wide annotation).
+
+
+```{r Gene Ontology Analysis in R, eval = F}
 
 # BiocManager::install("topGO")
 # BiocManager::install("clusterProfiler")
@@ -179,7 +265,7 @@ geneList <- Th17GOgenes$p_val_adj
 geneList <- na.omit(geneList)
 names(geneList) <- rownames(Th17GOgenes)
 
-# Use the topGO package to compare it to Gene Ontology http://www.geneontology.org/. Here we are taking vocabulary that describes biological processes (ontology = "BP") and comparing it to our geneList. geneSelectionFun is a function that specifies which genes are interesting based on the gene scores. The annot function maps the gene identifiers to GO terms from "org.Hs.eg.db", which is the human gene annotation package. 
+# Use the topGO package to compare it to [Gene Ontology](http://www.geneontology.org/). Here we are taking vocabulary that describes biological processes (ontology = "BP") and comparing it to our geneList. geneSelectionFun is a function that specifies which genes are interesting based on the gene scores. The annot function maps the gene identifiers to GO terms from "org.Hs.eg.db", which is the human gene annotation package. 
 
 GOdata <- new("topGOdata",
         ontology = "BP",
@@ -264,9 +350,17 @@ ggplot2::ggsave("GOAnalysis_Th17cell_Fisher.png",
     
 ```
 
+```{r, echo = F, out.width = "400px"}
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_AcneGraphicalAnalyses/images/GOAnalysis.png")
+
+
+```
+
+
 The process above for gene ontology is quite extensive, though. There is a great online platform called EnrichR where you can just plug in the top genes and get many different types of ontology plots.
 
-```{r EnrichR}
+```{r EnrichR, eval = F}
 
 Th17cellEnrichR <- FindMarkers(NewLymphocyteClusters, ident.1 = "Th17 cell", min.pct = 0.10, logfc.threshold = 0.25)
 
@@ -282,89 +376,9 @@ write_xlsx(Th17cellEnrichRtable,"C:\\Users\\tamto\\Desktop\\Th17cellEnrichRtable
 
 ```
 
-Copy and paste the genes into https://maayanlab.cloud/Enrichr/ for analysis. Make sure you select for genes that are statistically significant (p_adj_val < 0.05).
+Copy and paste the genes into [EnrichR](https://maayanlab.cloud/Enrichr/) for analysis. Make sure you select for genes that are statistically significant (p_adj_val < 0.05).
 
 
-Cells can transition from one functional state to another based on various stimuli or the microenvironment. (For example, a naive T cell can become a Th1, Th2, Th17, or Treg based on different stimuli.) Because we can analyze cell clusters from our single cell data, we can investigate cell trajectories too. Pseudotime analysis helps us determine which state each cell might be in based on their gene expression or the cells' progress through each transition state. Monocle is a powerful way to analyze trajectories because it learns the sequence of gene expression changes for each cell to place it within a trajectory.
+# CONCLUSION
 
-Because this dataset doesn't really focus on a cell's transition over time (i.e. a stem cell data set or sequencing of cells over time), trajectory analysis is not as useful for our analysis, but it's good to know to apply for any future dataset that might need it.
-
-Here is the site to help with installing the monocle3 package: https://cole-trapnell-lab.github.io/monocle3/docs/installation/
-
-```{r Pseudotime Analysis}
-
-# if (!requireNamespace("BiocManager", quietly = TRUE))
-# install.packages("BiocManager")
-# BiocManager::install(version = "3.14")
-
-# BiocManager::install(c('BiocGenerics', 'DelayedArray', 'DelayedMatrixStats',
-#                       'limma', 'lme4', 'S4Vectors', 'SingleCellExperiment',
-#                       'SummarizedExperiment', 'batchelor', 'HDF5Array',
-#                       'terra', 'ggrastr'))
-
-# install.packages("devtools")
-# devtools::install_github('cole-trapnell-lab/monocle3')
-
-# install.packages("remotes")
-# remotes::install_github("satijalab/seurat-wrappers")
-
-library(monocle3)
-
-# Useful way for getting started with monocle3: https://cole-trapnell-lab.github.io/monocle3/docs/getting_started/
-
-# Install SeuratWrappers and convert to monocle3 cell_data_set. We need to load the data into monocle3's main class using the function in SeuratWrappers.
-
-# remotes::install_github('satijalab/seurat-wrappers')
-library(SeuratWrappers)
-
-cds <- SeuratWrappers::as.cell_data_set(NewLymphocyteClusters)
-
-# Now you can preprocess the data (dimension reduction, cell clustering, etc.). Monocle3 then "learns" the data and you can choose nodes of interest based on the cell types you want to do trajectory analyses.
-
-cds <- reduce_dimension(cds, preprocess_method = "PCA")
-cds <- cluster_cells(cds)
-cds <- learn_graph(cds, use_partition = FALSE)
-
-# You can view the UMAP by plotting the cds and showing it on the trajectory graph. The funciton order_cells() allows you to choose the nodes of interest.
-
-plot_cells(cds, 
-           show_trajectory_graph = FALSE,
-           color_cells_by = "partition") 
-
-cds <- order_cells(cds)
-
-# After selecting the nodes of interest, you can plot it in various ways (i.e. get connect the nodes, label branch points, etc.). You can group by celltype/pseudotime/partition, edit the labels, etc. Grouping by pseudotime allows you to see the transition (dark blue at 0 indicates the root cells, yellow indicates the end cell state). You can also choose how you want to label (roots, leaves, branch points, etc.).
-
-plot_cells(cds, 
-           color_cells_by = "pseudotime",
-           label_roots = F, 
-           label_leaves = T,
-           label_branch_points = F
-           )
-
-# Here I chose the CD4 clusters. Based on the pseudotime plot I generated, it shows that the root cells are the Naive CD4 T cell cluster, and the end cell states are at the Treg, EM CD4 T cell, or Th17 cell clusters. This makes sense because the naive CD4 T cells can differentiate to those cell types.
-
-# Monocle3 is also useful for plotting where and when certain genes may be highly expressed (by comparing the expression to other cells in the data). For instance, the expression of a certain gene may increase or decrease over time based on how the cell changes over time. To do this analysis, you first have to specify the gene name and short name column.
-
-rowData(cds)$gene_name <- rownames(cds)
-rowData(cds)$gene_short_name <- rowData(cds)$gene_name
-
-# You can check to make sure a certain gene name is there by searching it in the row names of the cds too: "TIGIT" %in% row.names(rowData(cds))
-
-term_genes <- c("TIGIT", "LAG3", "PDCD1", "CCR7", "SELL", "TCF7")
-
-plot_cells(cds,
-           genes = term_genes,
-           label_cell_groups=TRUE,
-           show_trajectory_graph=FALSE)
-
-# Because our dataset does not have cells based on different time points, this analysis is not as relevant. It is important to notice, however, that our generated graph does show terminal effector state genes such as TIGIT, LAG3, and PDCD1 are expressed more in differentiated cell clusters. On the other hand, naive/stem cell-like markers such as CCR7, SELL, and TCF7 are more highly expressed in the naive clusters. 
-
-# Site for more monocle3 information: https://cole-trapnell-lab.github.io/monocle3/ . You can also do pseudotime analysis with RNA velocity using the Python package, scVelo.
-
-```
-
-
-CONCLUSION
-
-In this project, we went over various methods for analyzing scRNAseq data. Whether it be generating dot plots, volcano plots, or doing gene ontology analysis, there are so many ways for analyzing Seurat objects. There are also so many ways to visualize the data, and you can edit it to how you see fit based on your needs for data representation. This makes R such a powerful language to use for molecular biology analysis.
+In this project, we went over various methods for analyzing scRNAseq data. Whether it be generating dot plots, volcano plots, or doing gene ontology analysis, there are so many ways for analyzing Seurat objects. There are also so many ways to visualize the data, and you can edit it to how you see fit based on your needs for data representation. This makes R such a powerful language to use for molecular biology analysis. In Part 2, I include how to do pseudotime analysis and how to use the CellChat package for cell-cell interaction analysis.
