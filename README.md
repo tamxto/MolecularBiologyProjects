@@ -2,7 +2,7 @@
 
 The field of molecular biology involves a LOT of data analysis! Here I share with you all a few projects I worked on and analyzed using R and Excel. I hope you find this easy to navigate and use for your own personal means of data analysis as well!
 
-**Note: All of the html files are too big to view from Github. I recommend downloading the rmd files and loading it in RStudio then knit the html version to view it in a more visually pleasing format!
+**Note: All of the html files are too big to view from Github. I recommend downloading the rmd files and loading it in RStudio then knit to html to view it in a more visually pleasing format!
 
 
 ## [Project: Sequence Alignment, Preprocessing, and Quality Control of scRNAseq Data](https://github.com/tamxto/MolecularBiologyProjects/tree/main/Projects/Project_SequencingQualityControl)
@@ -33,11 +33,19 @@ Originally, the authors named 5 cell clusters in this dataset, however, I plan t
 
 This project utilizes the newly expanded lymphocyte dataset constructed from the "Expanding Acne Dataset" project. 
 
-In this project, I demonstrate how to use various packages and generate different types of visual analyses such as dot plots, violin plots, bar plots, etc. Furthermore, I include other methods of analysis with single cell data such as gene ontology (EnrichR included), subsetting, pseudotime, etc. 
+In this project, I demonstrate how to use various packages and generate different types of visual analyses such as dot plots, violin plots, bar plots, etc. Furthermore, I include other methods of analysis with single cell data such as gene ontology (EnrichR included), subsetting, etc. 
 
 These are fundamental packages to understand how we can analyze single cell sequencing data. It's definitely very powerful!
 
 <img src="MainPageImages/proportion_cells.png" width = "200"/> <img src="MainPageImages/Th17volcanoplot.png" width = "235"/> 
+
+
+## [Project: Graphical Analysis of New Acne Dataset Part 2](https://github.com/tamxto/MolecularBiologyProjects/tree/main/Projects/Project_AcneGraphicalAnalyses_Part2)
+
+Here we explore pseudotime trajectories and cell-cell interactions/communications. You can get a bunch of information from doing these analyses. In this project, I go over a few graphs and information we can generate from monocle3 and CellChat.
+
+<img src="MainPageImages/ccl5_ccr4 copy.png" width="200"/>
+
 
 ## Project: Proteomics Analysis from Mass Spectrometry Data
 
