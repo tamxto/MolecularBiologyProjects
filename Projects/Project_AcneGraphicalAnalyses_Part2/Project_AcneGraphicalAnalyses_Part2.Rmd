@@ -3,8 +3,8 @@ title: "AcneGraphicalAnalyses_Part2"
 author: "TamTo"
 date: "2023-11-27"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 # Introduction
@@ -159,11 +159,13 @@ library(patchwork)
 options(stringsAsFactors = FALSE)
 
 cellChat <- createCellChat(object = NewLymphocyteClusters, group.by = "ident", assay = "RNA")
+
 ```
 
 Set the ligand-receptor interaction database (in this case, it's human).
 
 ```{r  out.width = "400px"}
+
 CellChatDB <- CellChatDB.human 
 showDatabaseCategory(CellChatDB)
 
