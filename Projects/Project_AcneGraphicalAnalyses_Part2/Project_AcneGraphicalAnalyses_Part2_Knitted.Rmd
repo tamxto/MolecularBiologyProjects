@@ -72,6 +72,13 @@ plot_cells(cds,
 
 ```
 
+```{r, echo = F, out.width = "400px"}
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_AcneGraphicalAnalyses/images/partitions.png")
+
+
+```
+
 Here, we see that there are 3 main "partitions". According to our UMAP, these are the CD4, CD8, and B cell clusters. You can then use the function order_cells() to choose the nodes of interest and which clusters you want to analyze.
 
 After selecting the nodes of interest, you can plot it in various ways (i.e. get connect the nodes, label branch points, etc.). You can group by celltype/pseudotime/partition, edit the labels, etc. Grouping by pseudotime allows you to see the transition (dark blue at 0 indicates the root cells, yellow indicates the end cell state). You can also choose how you want to label (roots, leaves, branch points, etc.). 
@@ -90,6 +97,18 @@ plot_cells(cds,
 ```
 
 
+```{r, echo = F, out.width = "400px"}
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_AcneGraphicalAnalyses/images/order_cells.png")
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_AcneGraphicalAnalyses/images/reference_umap.png")
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_AcneGraphicalAnalyses/images/chosen_nodes.png")
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_AcneGraphicalAnalyses/images/CD8_nodes.png")
+
+```
+
 Based on nodes chosen and the pseudotime plot I generated, it shows that the root cells are the Naive CD4 T cell cluster, and the end cell states are at the Treg, EM CD4 T cell, or Th17 cell clusters. On the other hand, choosing the CD8 / NK cell cluster shows the root cells beginning at the stem-like CD8 cells and ending as either an effector CD8 T cell or NK cell. This makes sense because the naive CD4 T cells or stem-like CD8s can differentiate into other cell types. 
 
 Monocle3 is also useful for plotting where and when certain genes may be highly expressed (by comparing the expression to other cells in the data). For instance, the expression of a certain gene may increase or decrease over time based on how the cell changes over time. To do this analysis, you first have to specify the gene name and short name column.
@@ -107,6 +126,13 @@ plot_cells(cds,
            genes = term_genes,
            label_cell_groups=TRUE,
            show_trajectory_graph=FALSE)
+```
+
+```{r, echo = F}
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_AcneGraphicalAnalyses/images/bygenes.png")
+
+
 ```
 
 Because our dataset does not have cells based on different time points, this analysis is not as relevant. It is important to notice, however, that our generated graph does show terminally differentiated effector state genes such as TIGIT, LAG3, and PDCD1 are expressed more in differentiated cell clusters. On the other hand, naive/stem cell-like markers such as CCR7, SELL, and TCF7 are more highly expressed in the naive clusters. 
@@ -229,16 +255,39 @@ netVisual_aggregate(cellChat, signaling = pathways.show, layout = "circle")
 # Hierarchy plot
 vertex.receiver = seq(1,5) # a numeric vector to show 5 on the left side and the rest on the right side
 netVisual_aggregate(cellChat, signaling = pathways.show,  vertex.receiver = vertex.receiver, layout = "hierarchy")
+```
 
+```{r echo = F, out.width = "600px"}
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_AcneGraphicalAnalyses_Part2/Images/CCL_hierarchy.png")
+
+```
+
+```{r eval = F}
 # Chord diagram
 par(mfrow=c(1,1))
 netVisual_aggregate(cellChat, signaling = pathways.show, layout = "chord")
+```
 
+```{r echo = F, out.width = "600px"}
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_AcneGraphicalAnalyses_Part2/Images/CCL_chord.png")
+
+```
+
+```{r eval = F}
 # Heatmap
 par(mfrow=c(1,1))
 netVisual_heatmap(cellChat, signaling = pathways.show, color.heatmap = "Reds")
 
 ```
+
+```{r echo = F, out.width = "600px"}
+
+knitr::include_graphics("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_AcneGraphicalAnalyses_Part2/Images/CCL_heatmap.png")
+
+```
+
 
 Based on these graphs, it looks like CD8 T cells and NK cells are the "senders" (i.e. the ones producing the chemokines "CCL" and the CD4 T cells are the receivers that express the chemokine receptors "CCR"). This makes sense because cytotoxic responders recruit helper T cells to sites of inflammation.
 
