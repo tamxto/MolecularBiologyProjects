@@ -5,7 +5,7 @@ The field of molecular biology involves a LOT of data analysis! Here I share wit
 **Note: All of the html files are too big to view from Github. I recommend downloading the raw html file on Github in order to view it!
 
 
-## [Project: Sequence Alignment, Preprocessing, and Quality Control of scRNAseq Data](https://github.com/tamxto/MolecularBiologyProjects/tree/main/Projects/Project_SequencingQualityControl)
+## [Project: Sequence Alignment, Preprocessing, and Quality Control of scRNAseq Data](https://github.com/tamxto/MolecularBiologyProjects/tree/main/Projects/Project_SequencingQualityControl/Project_SequencingQualityControl.html)
 
 Here I go over what to do when you get back raw files from the sequencing core! How to download/upload the large data sets (Unix/Linux Command line), align the sequences, check for quality, then preprocess and normalize the data in R.
 
@@ -14,7 +14,7 @@ This was probably what I struggled with the most when I first started since it's
 <img src="MainPageImages/featurecounts.png" width = "200"/> <img src="MainPageImages/tsne.png" width = "400"/>
 
 
-## [Project: Expanding Acne Dataset](https://github.com/tamxto/MolecularBiologyProjects/tree/f07e3bbe88f29d288ce43d77a79c74069a921433/Projects/Project_ExpandingAcneDataset)
+## [Project: Expanding Acne Dataset](https://github.com/tamxto/MolecularBiologyProjects/tree/f07e3bbe88f29d288ce43d77a79c74069a921433/Projects/Project_ExpandingAcneDataset/ExpandingAcneData.html)
 
 For this project, I'm working on expanding a publicly available dataset based off a paper that compared normal vs. acne skin using single-cell RNA sequencing (scRNAseq). scRNAseq is an effective tool for analyzing genetic and molecular profiles of individual cells. This allows us to study changes in specific cell types based on the types of disease lesions. We can know which genes are differentially expressed in each cell type and each condition. In this case, we can know how gene expression differs between cell types in normal vs. acne skin lesions. It's a powerful way for elucidating unknown pathogeneses and identifying potential targets for therapeutics.
 
@@ -29,7 +29,7 @@ Originally, the authors named 5 cell clusters in this dataset, however, I plan t
 <img src="MainPageImages/OldUMAP.png" width="200"/> <img src="MainPageImages/NewUMAP.png" width="250"/>
 
 
-## [Project: Graphical Analysis of New Acne Dataset](https://github.com/tamxto/MolecularBiologyProjects/tree/2df20131ffdce89098ecf5cdfcc9aabd375e8b70/Projects/Project_AcneGraphicalAnalyses)
+## [Project: Graphical Analysis of New Acne Dataset](https://github.com/tamxto/MolecularBiologyProjects/tree/2df20131ffdce89098ecf5cdfcc9aabd375e8b70/Projects/Project_AcneGraphicalAnalyses/AcneGraphicalAnalyses.html)
 
 This project utilizes the newly expanded lymphocyte dataset constructed from the "Expanding Acne Dataset" project. 
 
@@ -40,7 +40,7 @@ These are fundamental packages to understand how we can analyze single cell sequ
 <img src="MainPageImages/proportion_cells.png" width = "200"/> <img src="MainPageImages/Th17volcanoplot.png" width = "235"/> 
 
 
-## [Project: Graphical Analysis of New Acne Dataset Part 2](https://github.com/tamxto/MolecularBiologyProjects/tree/main/Projects/Project_AcneGraphicalAnalyses_Part2)
+## [Project: Graphical Analysis of New Acne Dataset Part 2](https://github.com/tamxto/MolecularBiologyProjects/tree/main/Projects/Project_AcneGraphicalAnalyses_Part2/Project_AcneGraphicalAnalyses_Part2.html)
 
 Here we explore pseudotime trajectories and cell-cell interactions/communications. You can get a bunch of information from doing these analyses. In this project, I go over a few graphs and information we can generate from monocle3 and CellChat.
 
