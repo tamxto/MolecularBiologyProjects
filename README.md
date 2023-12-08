@@ -11,7 +11,7 @@ This project focuses on analysis of proteomics data to identify protein expressi
 
 I had designed this experiment, prepped isolated protein samples in the lab, then sent them to mass spectrometry for protein identification/quantification. Super cool getting to see results come back beginning from wet lab and ending with dry lab techniques.
 
-<img align="center" src="MainPageImages/NETsIFpng.png" width="300"/> <img align="center" src="MainPageImages/volcano_example.png" width = "250"/>
+<img align="center" src="MainPageImages/NETsIFpng.png" width="300"/> <img align="center" src="MainPageImages/volcano_example.png" width = "320"/>
 
 
 ## [Project: Sequence Alignment, Preprocessing, and Quality Control of scRNAseq Data](https://github.com/tamxto/MolecularBiologyProjects/blob/main/Projects/Project_SequencingQualityControl/Project_scRNAseqQualityControl.html)
