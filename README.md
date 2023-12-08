@@ -1,8 +1,17 @@
 # Molecular Biology Projects
 
-The field of molecular biology involves a LOT of data analysis! Here I share with you all a few projects I worked on and analyzed using R and Excel. I hope you find this easy to navigate and use for your own personal means of data analysis as well!
+The field of molecular biology involves a LOT of data analysis! Here I share with you all a few projects I worked on and analyzed using R or Excel. I hope you find this easy to navigate and use for your own personal means of data analysis as well!
 
-**Note: All of the html files are too big to view from Github. I recommend downloading the raw html file on Github in order to view it!
+**Note: All of the html files are too big to view from Github. I recommend downloading the raw html file on Github in order to view it! (Otherwise you can view the .rmd file in the Project folders as well)**
+
+
+## [Project: Proteomics Analysis from Mass Spectrometry Data](https://github.com/tamxto/MolecularBiologyProjects/blob/main/Projects/Project_ProteomicsAnalysis/TETs_Analysis_github.html)
+
+This project focuses on analysis of proteomics data to identify protein expression patterns, interactions with molecular networks, etc. to make comparative conclusions between samples. 
+
+I had designed this experiment, prepped isolated protein samples in the lab, then sent them to mass spectrometry for protein identification/quantification. Super cool getting to see results come back beginning from wet lab and ending with dry lab techniques.
+
+<img align="center" src="MainPageImages/NETsIFpng.png" width="200"/> <img align="center" src="MainPageImages/Volcano_example.png" width = "400"/>
 
 
 ## [Project: Sequence Alignment, Preprocessing, and Quality Control of scRNAseq Data](https://github.com/tamxto/MolecularBiologyProjects/blob/main/Projects/Project_SequencingQualityControl/Project_scRNAseqQualityControl.html)
@@ -11,7 +20,7 @@ Here I go over what to do when you get back raw files from the sequencing core! 
 
 This was probably what I struggled with the most when I first started since it's a bunch of "figuring out what works with your laptop/PC" kinda deal. Otherwise, everything is straightforward once you have everything downloaded and the code ready to go!
 
-<img src="MainPageImages/featurecounts.png" width = "200"/> <img src="MainPageImages/tsne.png" width = "400"/>
+<img align="center" src="MainPageImages/featurecounts.png" width = "200"/> <img align="center" src="MainPageImages/tsne.png" width = "400"/>
 
 
 ## [Project: Expanding Acne Dataset](https://github.com/tamxto/MolecularBiologyProjects/blob/main/Projects/Project_ExpandingAcneDataset/ExpandingAcneData.html)
@@ -26,7 +35,7 @@ Do, Tran H. et al. already did quality control and integrated the data, but my g
 
 Originally, the authors named 5 cell clusters in this dataset, however, I plan to figure out if we can expand it into more cell types so that the data is more specific for generating hypotheses (as shown below). This will allow researchers to more specifically narrow down where a gene of interest is being expressed. After expanding the dataset, I plan to analyze the single cell data in through different graphical representations (shown in the next project).
 
-<img src="MainPageImages/OldUMAP.png" width="200"/> <img src="MainPageImages/NewUMAP.png" width="250"/>
+<img align="center" src="MainPageImages/OldUMAP.png" width="200"/> <img align="center" src="MainPageImages/NewUMAP.png" width="250"/>
 
 
 ## [Project: Graphical Analysis of New Acne Dataset](https://github.com/tamxto/MolecularBiologyProjects/blob/main/Projects/Project_AcneGraphicalAnalyses/AcneGraphicalAnalyses.html)
@@ -37,23 +46,12 @@ In this project, I demonstrate how to use various packages and generate differen
 
 These are fundamental packages to understand how we can analyze single cell sequencing data. It's definitely very powerful!
 
-<img src="MainPageImages/proportion_cells.png" width = "200"/> <img src="MainPageImages/Th17volcanoplot.png" width = "235"/> 
+<img align="center" src="MainPageImages/proportion_cells.png" width = "200"/> <img align="center" src="MainPageImages/Th17volcanoplot.png" width = "235"/> 
 
 
 ## [Project: Graphical Analysis of New Acne Dataset Part 2](https://github.com/tamxto/MolecularBiologyProjects/blob/main/Projects/Project_AcneGraphicalAnalyses_Part2/Project_AcneGraphicalAnalyses_Part2.html)
 
 Here we explore pseudotime trajectories and cell-cell interactions/communications. You can get a bunch of information from doing these analyses. In this project, I go over a few graphs and information we can generate from monocle3 and CellChat.
 
-<img src="MainPageImages/ccl5_ccr4 copy.png" width="400"/>
-
-
-## Project: Proteomics Analysis from Mass Spectrometry Data
-
-Outside of using Seurat and analyzing single cell, you can analyze other molecular biology data (in this case, we are looking at proteomics data). 
-
-This data holds dear to me because it's something that I created in the lab--starting with the question, then hypothesis, experimental design, troubleshooting, sample prep, and finally obtaining the data to analyze. It's awesome to see wet lab techniques colliding with dry lab. This is what makes science so cool!
-
-Currently still working on analysis...
-
-<img src="MainPageImages/NETsIFpng.png" width="200"/> <img src="MainPageImages/AA1AA4heatmap.png" width="200"/>
+<img align="center" src="MainPageImages/ccl5_ccr4 copy.png" width="400"/>
 
