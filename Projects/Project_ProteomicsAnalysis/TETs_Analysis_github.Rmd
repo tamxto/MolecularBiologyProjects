@@ -381,9 +381,9 @@ Spon_PMA_Volcano <- Volcano_plot(d, "G1", "G2")
 
 Now we can use EnhancedVolcano() to generate the volcano plots, set the p-values/logFC, adjust titles, etc.
 
-**Because this data is not yet publicly available, the result of the plot is not included.**
+**Because this data is not yet publicly available, the gene names on the plot are not included.**
 
-```{r Graph Volcano Plot, out.width = "500px", eval = F}
+```{r Graph Volcano Plot, out.width = "500px"}
 
 EnhancedVolcano(Spon_CH_Volcano,
     lab = rownames(Spon_CH_Volcano),
@@ -394,7 +394,7 @@ EnhancedVolcano(Spon_CH_Volcano,
     pCutoff = 0.05,
     FCcutoff = 2,
     pointSize = 2.0,
-    labSize = 5.0,
+    labSize = 0.0,
     cutoffLineType = 'twodash',
     cutoffLineWidth = 0.8,
     colAlpha = 1,
