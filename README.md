@@ -2,7 +2,7 @@
 
 The field of molecular biology involves a LOT of data analysis! Here I share with you all a few projects I worked on and analyzed using R or Excel. I hope you find this easy to navigate and use for your own personal means of data analysis as well!
 
-**Note: All of the html files are too big to view from Github. I recommend downloading the raw html file on Github in order to view it! (Otherwise you can view the .rmd file in the Project folders as well)**
+**Note: All of the html files are too big to view from Github. I recommend downloading the raw html file on Github in order to view it (otherwise you can view the .rmd file in the Project folders as well)!**
 
 
 ## [Project: Proteomics Analysis from Mass Spectrometry Data](https://github.com/tamxto/MolecularBiologyProjects/blob/main/Projects/Project_ProteomicsAnalysis/TETs_Analysis_github.html)
@@ -11,7 +11,7 @@ This project focuses on analysis of proteomics data to identify protein expressi
 
 I had designed this experiment, prepped isolated protein samples in the lab, then sent them to mass spectrometry for protein identification/quantification. Super cool getting to see results come back beginning from wet lab and ending with dry lab techniques.
 
-<img align="center" src="MainPageImages/NETsIFpng.png" width="200"/> <img align="center" src="MainPageImages/Volcano_example.png" width = "400"/>
+<img align="center" src="MainPageImages/NETsIFpng.png" width="300"/> <img align="center" src="MainPageImages/volcano_example.png" width = "320"/>
 
 
 ## [Project: Sequence Alignment, Preprocessing, and Quality Control of scRNAseq Data](https://github.com/tamxto/MolecularBiologyProjects/blob/main/Projects/Project_SequencingQualityControl/Project_scRNAseqQualityControl.html)
