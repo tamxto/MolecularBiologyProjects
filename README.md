@@ -7,13 +7,11 @@ The field of molecular biology involves a LOT of data analysis! Here I share wit
 
 ## [Project: Proteomics Analysis from Mass Spectrometry Data](https://github.com/tamxto/MolecularBiologyProjects/blob/main/Projects/Project_ProteomicsAnalysis/TETs_Analysis_github.html)
 
-Outside of using Seurat and analyzing single cell, you can analyze other molecular biology data (in this case, we are looking at proteomics data). 
+This project focuses on analysis of proteomics data to identify protein expression patterns, interactions with molecular networks, etc. to make comparative conclusions between samples. 
 
-This data holds dear to me because it's something that I created in the lab--starting with the question, then hypothesis, experimental design, troubleshooting, sample prep, and finally obtaining the data to analyze. It's awesome to see wet lab techniques colliding with dry lab. This is what makes science so cool!
+I had designed this experiment, prepped isolated protein samples in the lab, then sent them to mass spectrometry for protein identification/quantification. Super cool getting to see results come back beginning from wet lab and ending with dry lab techniques.
 
-Currently still working on analysis...
-
-<img align="center" src="MainPageImages/NETsIFpng.png" width="200"/> <img align="center" rc="Projects/Project_ProteomicsAnalysis/volcano_example.png" width = "400"/>
+<img align="center" src="MainPageImages/NETsIFpng.png" width="200"/> <img align="center" src="MainPageImages/Volcano_example.png" width = "400"/>
 
 
 ## [Project: Sequence Alignment, Preprocessing, and Quality Control of scRNAseq Data](https://github.com/tamxto/MolecularBiologyProjects/blob/main/Projects/Project_SequencingQualityControl/Project_scRNAseqQualityControl.html)
