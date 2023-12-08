@@ -26,19 +26,22 @@ Cutibacterium acnes (C. acnes) are a predominant bacterial species on the skin k
 While TETs play a pivotal role in host defense against C. acnes, their mechanism of action and contribution to immune response against pathogens in the skin remain unknown. C. acnes phylotypes can induce different immune responses, so they may trigger the release of ETs that can be either protective or contribute to inflammatory response.
 
 Therefore, investigating the important molecular factors that make up C. acnes-induced ETs can provide insights for developing targeted therapeutic strategies to manage acne vulgaris and maintain skin homeostasis. Within this dataset, we are analyzing 4 conditions of TETs induced by antimicrobial Th17 cells:
+
 + TETs formed spontaneously
 + TETs induced by phorbol 12-myristate 13-acetate (PMA)
 + Acne-associated C. acnes strain
 + Healthy-associated C. acnes strain
 
-    We hypothesize that TETs induced by different stimuli have distinct protein compositions. 
-    This analysis will shed light on the intricate balance between the skin microbiome and immune system in regulating skin health. 
+
+> We hypothesize that TETs induced by different stimuli have distinct protein compositions. 
+This analysis will shed light on the intricate balance between the skin microbiome and immune system in regulating skin health. 
 
 **To ensure privacy of the data (since it is not yet available publicly), some results are hidden.**
       
 # Setting up the Data {.tabset}
 
 When I was prepping these samples, I made triplicates of each condition (all conditions normalized with the same amount of cells). The samples are as follows:
+
 + Spontaneous: T1-T3
 + PMA: T4-T6
 + CA (acne-associated strain): T7-T9
