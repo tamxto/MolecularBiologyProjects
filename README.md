@@ -1,17 +1,26 @@
 # Molecular Biology Projects
 
-The field of molecular biology involves a LOT of data analysis! Here I share with you all a few projects I worked on and analyzed using R or Excel. I hope you find this easy to navigate and use for your own personal means of data analysis as well!
+The field of molecular biology involves a LOT of data analysis! Here I share with you all a few projects I worked on and analyzed using R or Excel. I hope you find this easy to navigate and use for your own personal means of data analysis too!
 
 **Note: All of the html files are too big to view from Github. I recommend downloading the raw html file on Github in order to view it (otherwise you can view the .rmd file in the Project folders as well)!**
 
 
-## [Project: Proteomics Analysis from Mass Spectrometry Data](https://github.com/tamxto/MolecularBiologyProjects/blob/main/Projects/Project_ProteomicsAnalysis/TETs_Analysis_github.html)
+## [Project: Proteomics Analysis from Mass Spectrometry Data Part 1](https://github.com/tamxto/MolecularBiologyProjects/blob/main/Projects/Project_ProteomicsAnalysis/ET_Analysis.html)
 
 This project focuses on analysis of proteomics data to identify protein expression patterns, interactions with molecular networks, etc. to make comparative conclusions between samples. 
 
-I had designed this experiment, prepped isolated protein samples in the lab, then sent them to mass spectrometry for protein identification/quantification. Super cool getting to see results come back beginning from wet lab and ending with dry lab techniques.
+I had designed this experiment, prepped isolated protein samples in the lab, then sent them to mass spectrometry for protein identification/quantification. Super cool getting to see results come back beginning from wet lab and ending with dry lab techniques. 
 
-<img align="center" src="MainPageImages/NETsIFpng.png" width="300"/> <img align="center" src="MainPageImages/volcano_example.png" width = "320"/>
+This first part of the analysis works on inspecting, cleaning, and preprocessing the dataset.
+
+<img align="center" src="MainPageImages/NETsIFpng.png" width="300"/> <img align="center" src="MainPageImages/PCA.png" width = "320"/>
+
+
+## [Project: Proteomics Analysis from Mass Spectrometry Data Part 2](https://github.com/tamxto/MolecularBiologyProjects/blob/main/Projects/Project_ProteomicsAnalysis/ET_Analysis_Pt2.html)
+
+In this part of the project, we use the preprocesssed data and analyze the relative protein abundances with different data visualization methods.
+
+<img align="center" src="MainPageImages/volcano_example.png" width = "320"/>
 
 
 ## [Project: Sequence Alignment, Preprocessing, and Quality Control of scRNAseq Data](https://github.com/tamxto/MolecularBiologyProjects/blob/main/Projects/Project_SequencingQualityControl/Project_scRNAseqQualityControl.html)
