@@ -1,0 +1,426 @@
+---
+title: "ET Analysis Part 1"
+author: "TamTo"
+date: "2024-02-04"
+output: html_document
+---
+
+# INTRODUCTION
+
+This project involves analyzing proteomics data. Within this dataset, we have obtained relative abundance values that represent the expression of specific proteins in a sample. The purpose of this experiment is to compare protein expression between different samples.
+
+Ultimately, analyzing protein abundances in proteomics data is crucial for elucidating biological markers, understanding protein regulation, and characterizing cellular processes under different biological conditinos.
+
+## Background
+
+Immune cells can release extracellular traps (ETs), which are structures composed of DNA, antimicrobial peptides, and other proteins. ETs can bind, capture, and neutralize pathogens, however, they have not yet been extensively studied in the skin.
+
+Cutibacterium acnes (C. acnes) are a predominant bacterial species on the skin known for inducing formation of ETs. C. acnes are associated with acne pathogenesis, and it has been shown that they can induce T cell extracellular trap (TET) formation by antimicrobial T helper 17 (Th17) cells [(Agak et al., 2021)](https://www.jci.org/articles/view/141594). 
+
+While TETs play a pivotal role in host defense against C. acnes, their mechanism of action and contribution to immune response against pathogens in the skin remain unknown. C. acnes phylotypes can induce different immune responses, so they may trigger the release of ETs that can be either protective or contribute to inflammatory response.
+
+Therefore, investigating the important molecular factors that make up C. acnes-induced ETs can provide insights for developing targeted therapeutic strategies to manage acne vulgaris and maintain skin homeostasis. Within this dataset, we are analyzing 4 conditions of TETs induced by antimicrobial Th17 cells:
+
++ TETs formed spontaneously
++ TETs induced by phorbol 12-myristate 13-acetate (PMA)
++ Acne-associated C. acnes strain
++ Healthy-associated C. acnes strain
+
+
+> We hypothesize that TETs induced by different stimuli have distinct protein compositions. 
+This analysis will shed light on the intricate balance between the skin microbiome and immune system in regulating skin health. 
+
+**To ensure privacy of the data (since it is not yet available publicly), some results are hidden.**
+
+```{r setup, message = FALSE}
+
+library(tidyverse)
+library(writexl)
+library(readxl)
+
+setwd("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ProteomicsAnalysis")
+
+# Load the data
+TETs <- read_excel("/Users/tamto/Desktop/Proteomics/TETs_Proteins.xlsx")
+
+```
+
+# Select and Clean the Data
+
+The dataset has a LOT of information (i.e. full gene ID names, biological processes, ratios, cellular components, ratios, etc.) along with NA values. Since this analysis uses the abundance values and protein IDs, I'm going to clean it up a bit.
+
+When I was prepping these samples, I made replicates of each condition (all conditions normalized with the same amount of cells). The samples are as follows:
+
++ Spontaneous: T1-T3
++ PMA: T4-T6
++ CA (acne-associated strain): T7-T9
++ CH (healthy-associated strain): T10-T12
+
+```{r Select and clean the data}
+
+# Inspect the data
+#str(TETs)
+dim(TETs)
+head(TETs)
+
+# Select Abundances from each sample for analysis
+TETs_Abundances <- TETs %>%
+  select('Gene Symbol', starts_with("Abundances (Grouped):"))
+  
+#It's also important to remember to omit the Gene Symbol rows with NA
+TETs_Abundances <- TETs_Abundances %>%
+  drop_na('Gene Symbol')
+
+# Select for groups of interest (Spontaneous, PMA, CA, CH induced TETs)
+TETs_Abundances_filter <- TETs_Abundances %>%
+  select(-c("Abundances (Grouped): E1", "Abundances (Grouped): E2", "Abundances (Grouped): E3"))
+
+# Rename the columns so they're easier to work with
+new_columns <- c("Gene", "T1", "T2", "T3",
+                 "T4", "T5", "T6",
+                 "T7", "T8", "T9",
+                 "T10", "T11", "T12")
+
+colnames(TETs_Abundances_filter)[1:13] <- new_columns
+
+colnames(TETs_Abundances_filter)
+
+# Remove rows where there is NA across all the samples
+TETs_Abundances_filter <- TETs_Abundances_filter %>%
+  filter(!rowSums(is.na(select(TETs_Abundances_filter, starts_with("T")))) == ncol(select(TETs_Abundances_filter, starts_with("T"))))
+
+# Find expression of proteins in at least 2/3 of each replicate across all conditions together
+replicates <- TETs_Abundances_filter %>%
+  filter(
+    rowSums(is.na(select(TETs_Abundances_filter, c(T1, T2, T3)))) < 2 &
+    rowSums(is.na(select(TETs_Abundances_filter, c(T4, T5, T6)))) < 2 &
+    rowSums(is.na(select(TETs_Abundances_filter, c(T7, T8, T9)))) < 2 &
+    rowSums(is.na(select(TETs_Abundances_filter, c(T10, T11, T12)))) < 2
+  )
+
+# Rename the columns to each sample replicate name
+renamed_columns <- c("Spon1", "Spon2", "Spon3",
+                     "PMA1", "PMA2", "PMA3",
+                     "CA1", "CA2", "CA3",
+                     "CH1", "CH2", "CH3")
+
+colnames(replicates)[2:13] <- renamed_columns
+
+```
+
+I've selected the necessary data for analysis and renamed the sample replicates for clarity.
+
+# Handling Missing Data
+
+From selecting the sample with values in at least 2/3 of the replicates, we need to impute the missing data. Below, I'm choosing the k-nearest neighbors (kNN) method to do so.
+
+```{r Handling missing values, message = FALSE, out.width = "500px"}
+# install VIM
+# install.packages("VIM")
+
+# Load VIM package
+library(VIM)
+
+# Explore and visualize missing data patterns
+aggr(replicates[,-1], numbers = TRUE, col = c("blue", "red"),
+     labels = names(data), cex.axis = 0.7)
+```
+
+There is less than 1% of data missing so I'm moving forward with k-NN imputation to fill in the missing values from the 2/3 replicates.
+
+```{r kNN imputation}
+# Choose an imputation method (e.g., k-nearest neighbors)
+imputed_data <- kNN(replicates)
+imputed_data <- imputed_data[1:13]
+
+# Evaluate imputed data. No more missing values.
+summary(imputed_data)
+any(is.na(imputed_data))
+
+# save the data
+# write_xlsx(imputed_data, "imputed_data.xlsx")
+
+```
+
+Next I'm standardizing the data to perform Principal Component Analysis (PCA). First to find the k-value, we create an elbow plot.
+
+```{r Standardized kNN values}
+na_TETs <- na.omit(TETs_Abundances_filter)
+
+# Calculate WCSS for different k values. WCSS is the within-cluster sum of square distance between each point and the centroid in a cluster. When we plot WCSS with the k-value, the plot looks like an elbow. As cluster size increases, the WCSS value will start to decrease. K-value at the elbow is optimal value of K (i.e. optimal number of clusters).
+wcss_values <- NULL
+for (k in 1:10) {
+  kmeans_model <- kmeans(na_TETs[, -1], centers = k)
+  wcss_values <- c(wcss_values, kmeans_model$tot.withinss)
+}
+
+# Create dataframe for plotting
+elbow_data <- data.frame(k = 1:10, WCSS = wcss_values)
+
+# Plot elbow plot
+ggplot(elbow_data, aes(x = k, y = WCSS)) +
+  geom_line(color = "blue") +
+  geom_point(color = "red", size = 3) +
+  labs(title = "Elbow Plot for K-means Clustering",
+       x = "Number of Clusters (k)",
+       y = "Within-cluster Sum of Squares (WCSS)")
+
+```
+
+Elbow is around 1.7 so k-value/optimal number of clusters = 1.7. I'm using the caret package to compute imputed and standardized values.
+
+```{r Standardized kNN values Pt. 2, message = FALSE}
+
+# Arranging by the total sum across rows from the replicates df
+replicates <- replicates %>%
+  mutate(Total = rowSums(replicates[,2:13])) %>%
+  arrange(desc(Total)) %>%
+  select(-Total)
+
+
+# Inspect missing values in each column
+missing_count <- colSums(is.na(replicates))
+
+# Print the result
+print(missing_count)
+
+# Load necessary library
+library(caret)
+
+# Perform k-NN imputation. preProcess() automatically ignores non-numeric columns.
+preProcValues <- preProcess(replicates,
+                            method = "knnImpute",
+                            k = 1.7)  # Choose an appropriate k value based on elbow plot
+                           #knnSummary = mean)
+
+standardized_imputed_values <- predict(preProcValues, replicates)
+
+# Apply imputation to the entire dataset
+standardized_imputed_values <- predict(preProcValues, replicates)
+
+# Check if there are any missing values now
+any(is.na(standardized_imputed_values))
+
+# write_xlsx(standardized_imputed_values, "standardized_imputed_data.xlsx")
+
+```
+
+Here we want to perform PCA on the dataset as a preprocessing step for data visualization techniques and to reduce dimensionality.
+
+```{r Scree Plot, message = FALSE}
+head(standardized_imputed_values)
+
+#load
+library("factoextra")
+library("FactoMineR")
+
+# make sure no NAs
+any(is.na(standardized_imputed_values))
+
+#pca_proteins[,-1] to omit first column from our analysis bc these are the genes and aren't the numeric values. scale.unit = standardizing the values
+pca.data <- PCA(standardized_imputed_values[,-1], scale.unit = TRUE, graph = FALSE)
+
+# scree plot
+fviz_eig(pca.data, addlabels = TRUE, ylim = c(0, 100))
+```
+
+The first PC explains 96.8% of the variation, 2nd PC explains 2.9%
+
+```{r Principal Component Analysis}
+
+# cos2 is squared cosine --> high = indicates good representation of the variable on the PC, low = variable not perfectly represented by the PCs. Cos2 determines how much each variable is represented in a given component, low = variable not perfectly represented by the component, high = good representation of the variable on that component
+fviz_cos2(pca.data, choice = "var", axes = 1:2)
+
+# draw variable correlation plot
+fviz_pca_var(pca.data, col.var = "cos2",
+             gradient.cols = c("#660033", "#330033"),
+             repel = TRUE) 
+
+# each sample is correlated to each other since they are next to each other on the plot (no negative correlation otherwise the arrow would be on the opposite side)
+
+# plot cell types and flip the table to put cell types as rows
+pca.data.ind <- PCA(t(standardized_imputed_values[,-1]), scale.unit = TRUE, graph = FALSE)
+
+
+fviz_pca_ind(pca.data.ind, col.ind = "cos2", 
+                  gradient.cols = c("#FFCC00", "#CC9933", "#660033", "#330033"), 
+                  repel = TRUE)
+
+# Edit the graph
+library(ggpubr) 
+
+a <- fviz_pca_ind(pca.data.ind, col.ind = "cos2", 
+                  gradient.cols = c("#FFCC00", "#CC9933", "#660033", "#330033"), 
+                  repel = TRUE)
+
+ggpar(a,
+      title = "Principal Component Analysis",
+      xlab = "PC1", ylab = "PC2",
+      legend.title = "Cos2", legend.position = "top",
+      ggtheme = theme_minimal())
+
+```
+
+We see there is grouping of the sample replicates, and samples display high cos2 values, indicating the variable is well-represented by the principal component.
+
+# Observing Relative Protein Abundances
+
+Here we calculate the relative frequency of protein abundance values by calculating the proportion of occurrences relative to the total number of observations.
+
+```{r Relative frequency and mean of protein abundance values, message = F}
+
+#row sums
+imputed_data$row_sum <- rowSums(imputed_data[, 2:13])
+
+# Calculate frequencies for each sample column
+for (sample_col in c("Spon1", "Spon2", "Spon3", 
+                     "PMA1", "PMA2", "PMA3", 
+                     "CA1", "CA2", "CA3", 
+                     "CH1", "CH2", "CH3")) {
+  freq_col <- paste0("freq_", sample_col)
+  imputed_data[[freq_col]] <- imputed_data[[sample_col]] / imputed_data$row_sum
+}
+
+# find the average of the abundances
+imputed_data <- imputed_data %>%
+  mutate(
+    Spontaneous = rowMeans(select(imputed_data, c(Spon1, Spon2, Spon3)), na.rm = TRUE),
+    PMA = rowMeans(select(imputed_data, c(PMA1, PMA2, PMA3)), na.rm = TRUE),
+    CA = rowMeans(select(imputed_data, c(CA1, CA2, CA3)), na.rm = TRUE),
+    CH = rowMeans(select(imputed_data, c(CH1, CH2, CH3)), na.rm = TRUE)
+  )
+
+# write_xlsx(imputed_data, "abundance_frequencies.xlsx")
+
+```
+
+## Histogram
+
+Distribution of the relative frequencies can be visualized via histograms.
+
+```{r Histogram showing distribution of sample frequencies, out.width = "500px"}
+
+# Select frequency data
+frequency_data <- imputed_data %>%
+  select(Gene, starts_with("freq"))
+
+# Reshape dataframe from wide to long format
+df_long <- frequency_data %>%
+  pivot_longer(cols = starts_with("freq_Spon") | starts_with("freq_PMA") | starts_with("freq_CA") | starts_with("freq_CH"),
+               names_to = "Condition",
+               values_to = "Abundance")
+
+# Create histogram
+ggplot(df_long, aes(x = Abundance)) +
+  geom_histogram(fill = "skyblue", color = "black", bins = 20) +
+  facet_wrap(~ Condition, scales = "free") +
+  labs(x = "Abundance", y = "Frequency", title = "Distribution of Protein Frequency Values")
+
+```
+
+We see that Spontaneous, PMA, and CA samples are skewed to the right. CH samples have more higher frequency values.
+
+## Violin Plot
+
+Violin plots are another method of showing distribution. 
+
+```{r Violin plot showing distribution of sample frequencies, out.width = "500px"}
+
+colnames(imputed_data)
+
+# Select the columns that include the frequencies
+violin_data <- imputed_data %>%
+  select(Gene, 15:26)
+
+
+rename_col <- c("Spon1", "Spon2", "Spon3",
+                        "PMA1", "PMA2", "PMA3",
+                        "CA1", "CA2", "CA3",
+                        "CH1", "CH2", "CH3")
+
+colnames(violin_data)[2:13] <- rename_col
+
+# Reshape the dataframe using tidyr's pivot_longer function
+violin_data_long <- violin_data %>%
+  pivot_longer(cols = -Gene, names_to = "Condition", values_to = "Abundance")
+
+# Order the sample replicates
+violin_data_long$Condition <- factor(violin_data_long$Condition, levels = c(
+  paste0("Spon", 1:3), 
+  paste0("PMA", 1:3), 
+  paste0("CA", 1:3), 
+  paste0("CH", 1:3)
+))
+
+# Plot violin plot using ggplot2
+ggplot(violin_data_long, aes(x = Condition, y = Abundance, fill = Condition)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1, fill = "white", color = "black", alpha = 0.5) + # Add boxplot overlay for clearer representation
+  labs(x = "Condition", y = "Frequency") +
+  theme_minimal()
+
+```
+
+We see the same pattern here too.
+
+## Heatmap
+
+Here we can get insights from relative protein abundances via plotting on a heatmap. I'm going to use z-scores as a normalization method to standardize the protein abundances across samples and compare between proteins. 
+
+Earlier we computed the average abundance values for each sample condition, so I'm going to use those.
+
+```{r Heatmap of protein frequencies, out.width = "600px"}
+
+# Select the 
+abundances <- imputed_data %>%
+  select(Gene, 27:30)
+
+# Make the heatmap using the protein abundance frequency values
+abundances_df <- abundances %>% 
+  remove_rownames %>% 
+  column_to_rownames(var="Gene")
+
+# Change df into a matrix
+abundances_matrix <- as.matrix(abundances_df)
+
+# Calculate z-scores
+row_stdev <- apply(abundances_matrix, 1, sd, na.rm=TRUE) # find row SD
+row_mean <- rowMeans(abundances_matrix, na.rm = T) # find row means
+z_scores <- (abundances_matrix-row_mean)/row_stdev # compute z-scores
+
+# Turn into matrix, ensure no NAs
+z_scores_matrix <- z_scores %>%
+  as.matrix() %>%
+  na.omit()
+
+# transpose because there are a lot of proteins
+transposed_matrix <- t(z_scores_matrix)
+
+# load necessary library
+library(gplots)
+
+# adjust colors
+custom_blue <- rgb(0, 0.5, 1)
+custom_red <- rgb(1, 0.5, 0)
+
+heatmap.2(transposed_matrix,
+          main = "Heatmap of Relative Protein Abundances",
+          col = colorRampPalette(c(custom_blue, "white", custom_red))(50),
+          cexRow = .8, # adjust font size of x-axis labels
+          cexCol = 0.5,  # Adjust the font size of y-axis labels
+          key.title = "z-score",  # Legend title
+          key.xlab = "",  # Remove x-axis label
+          key.ylab = "",  # Remove y-axis label
+          keysize = 1.5,  # Adjust legend size
+          density.info = "none",  # Remove density plot
+          trace = "none")
+
+```
+
+We see that proteins are differentially expressed across samples/conditions.
+
+# CONCLUSION
+
+In this project, we first set a goal from our experimental data. Next we inspected, cleaned, and preprocessed the data using different machine learning and statistical methods. We were able to create visualizations from the results of these analyses as well.
+
+In Part 2, we use this data to perform more analyses to help us understand more about the data we obtained. We can formulate both descriptive and predictive insights about ETs in acne.

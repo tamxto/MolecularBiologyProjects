@@ -1,0 +1,253 @@
+---
+title: "ET Analysis Part 2"
+author: "TamTo"
+date: "2024-02-04"
+output: html_document
+---
+
+# INTRODUCTION PART 2
+
+We are now continuing our analysis after preprocessing the data. As mentioned before:
+
+> We hypothesize that TETs induced by different stimuli have distinct protein compositions. 
+This analysis will shed light on the intricate balance between the skin microbiome and immune system in regulating skin health. 
+
+The 4 conditions of TETs induced by antimicrobial Th17 cells:
+
++ TETs formed spontaneously
++ TETs induced by phorbol 12-myristate 13-acetate (PMA)
++ Acne-associated C. acnes strain
++ Healthy-associated C. acnes strain
+
+```{r setup, message = FALSE}
+
+library(tidyverse)
+library(writexl)
+library(readxl)
+
+setwd("/Users/tamto/Documents/GitHub/MolecularBiologyProjects/Projects/Project_ProteomicsAnalysis")
+
+# Load the data we preprocessed
+TETs_data <- read_excel("/Users/tamto/Documents/TETs_Proteomics/abundance_frequencies.xlsx")
+
+```
+
+# Spearman's Correlogram
+
+Spearman's correlation is a non-parametric measure of correlation that can measure the degree to which the relationship between variables can be described by a monotonic function. 
+
+```{r Spearmans Correlation Heatmap, message = FALSE, out.width = "500px", warning = F}
+
+library(heatmaply)
+library(dendextend)
+library(RColorBrewer)
+
+# Select the condition variables 
+Spearmans <- TETs_data %>%
+  select(Gene, Spontaneous, PMA, CA, CH)
+
+# Change the Gene column to be the rownames
+Spearmans_rows <- Spearmans %>% 
+  remove_rownames %>% 
+  column_to_rownames(var="Gene") 
+
+# Change to correlation matrix using Spearman's method
+cor_matrix <- cor(Spearmans_rows, method = "spearman")
+
+# Make the heatmap 
+heatmaply(cor_matrix,
+  colors = colorRampPalette(c("pink", "red")),
+#  limits = c(0.1, 1.0),
+  width = 700,
+  height = 700,
+  fontsize_row = 12,
+  fontsize_col = 12,
+  main = "Spearman Correlation Heatmap")
+
+  
+```
+
+Here we see that the correlation coefficients are all positive between all conditions. There is a strong, positive correlation between all samples since the coefficient ranges from 0.7-1.0. CH-induced TETs in particular, however, display the most distinct profile from the other TETs
+
+# Venn Diagram
+
+Here we see that CH-induced TETs do hold the most distinct proteome by generating a venn diagram of all the proteins expressed in each TET sample.
+
+I did similar preprocessing of the data as in Part 1 as well except with each sample condition and their replicates.
+
+```{r Venn diagram of all proteins, message = FALSE, out.width = "500px", warning = F}
+
+# Load the data by sample condition.
+Spon_imputed <- read_excel("/Users/tamto/Documents/TETs_Proteomics/Proteins_by_condition.xlsx", 
+    sheet = "Spontaneous")
+PMA_imputed <- read_excel("/Users/tamto/Documents/TETs_Proteomics/Proteins_by_condition.xlsx", 
+    sheet = "PMA")
+CA_imputed <- read_excel("/Users/tamto/Documents/TETs_Proteomics/Proteins_by_condition.xlsx", 
+    sheet = "CA")
+CH_imputed <- read_excel("/Users/tamto/Documents/TETs_Proteomics/Proteins_by_condition.xlsx", 
+    sheet = "CH")
+
+library(venn)
+library(ggvenn)
+
+ggvenn(list('Spontaneous' = Spon_imputed$Gene, 'CA' = CA_imputed$Gene, 'CH' = CH_imputed$Gene, 'PMA' = PMA_imputed$Gene),
+        show_percentage = F) +
+  scale_fill_manual(values = c("#ADD8E6", "#FFFACD", "#FFA07A", "#98FB98")) +
+                        theme(text = element_text(family = "Arial", size = 12))
+
+```
+
+CH-induced TETs do hold the most distinct proteome. While each sample condition has their own distinct proteins, CH-induced TETs express 214 unique proteins.
+
+# Volcano Plots
+
+Volcano plots are used to visualize the results of differential expression analysis between groups/conditions. This is very useful for seeing which proteins/genes may be upregulated in one condition compared to the other.
+
+Similar to the data for the Venn Diagram, I preprocessed the data by the same method but selected by condition instead for the following comparisons:
+
++ Spontaneous vs. PMA
++ Spontaneous vs. CA
++ Spontaneous vs. CH
++ PMA vs. CA
++ PMA vs. CH
++ CA vs. CH
+
+In the following chunk, we perform differential gene expression analysis using the DESeq2 package with each condition being compared.
+
+```{r Volcano Plot function, message = FALSE, out.width = "500px", warning = F}
+
+#load the data
+Spon_PMA_imputed <- read_excel("/Users/tamto/Documents/TETs_Proteomics/Spon_PMA_imputed.xlsx")
+Spon_CA_imputed <- read_excel("/Users/tamto/Documents/TETs_Proteomics/Spon_CA_imputed.xlsx")
+Spon_CH_imputed <- read_excel("/Users/tamto/Documents/TETs_Proteomics/Spon_CH_imputed.xlsx")
+PMA_CA_imputed <- read_excel("/Users/tamto/Documents/TETs_Proteomics/PMA_CA_imputed.xlsx")
+PMA_CH_imputed <- read_excel("/Users/tamto/Documents/TETs_Proteomics/PMA_CH_imputed.xlsx")
+CA_CH_imputed <- read_excel("/Users/tamto/Documents/TETs_Proteomics/CA_CH_imputed.xlsx")
+
+library(DESeq2)
+
+perform_dge_analysis <- function(data, condition1, condition2) {
+  # Reorder columns based on sample conditions
+  cols <- c(paste0(condition1, "_", 1:3), paste0(condition2, "_", 1:3))
+  data <- data[, c("Gene", cols)]
+  
+  # Prepare sample metadata
+  condition <- c(rep(condition2, 3), rep(condition1, 3))
+  sample_metadata <- data.frame(condition)
+  
+  # Perform DESeq2 analysis
+  dds <- DESeqDataSetFromMatrix(countData = data[, -1],
+                                colData = sample_metadata,
+                                design = ~ condition)
+  dds <- DESeq(dds)
+  
+  # Extract results
+  results <- results(dds)
+  results_df <- as.data.frame(results)
+  results_df$Gene <- data$Gene
+  
+  # Define output name
+  output_name <- paste("Volcano", condition1, condition2, sep = "_")
+  
+  # Assign the results_df dataframe to an object with the desired name
+  assign(output_name, results_df, envir = .GlobalEnv)
+  }
+
+
+# Usage:
+Volcano_Spon_PMA <- perform_dge_analysis(Spon_PMA_imputed, "Spon", "PMA")
+Volcano_Spon_CA <- perform_dge_analysis(Spon_CA_imputed, "Spon", "CA")
+Volcano_Spon_CH <- perform_dge_analysis(Spon_CH_imputed, "Spon", "CH")
+Volcano_PMA_CA <- perform_dge_analysis(PMA_CA_imputed, "PMA", "CA")
+Volcano_PMA_CH <- perform_dge_analysis(PMA_CH_imputed, "PMA", "CH")
+Volcano_CA_CH <- perform_dge_analysis(CA_CH_imputed, "CA", "CH")
+
+
+```
+
+The resulting data frames consist of log2 fold change, p-values, false discovery rate-adjusted p-values, etc. This information can be used to see which genes are differentially expressed in terms of statistical significance.
+
+```{r Volcano plots, message = FALSE, out.width = "500px", warning = F}
+
+library(EnhancedVolcano)
+library(ggrepel)
+
+EnhancedVolcano(Volcano_Spon_CH,
+                   lab = Volcano_Spon_CH$Gene,
+                   x = 'log2FoldChange',
+                   y = 'padj',
+                   title = 'Volcano Plot',
+                   pCutoff = 0.05, #p-value cutoff of 0.05
+                   FCcutoff = 2, # log2FC value of 2
+                   pointSize = 2,
+                   labSize = 0) #labSize is 0 to ensure privacy of data
+
+```
+
+We can repeat this on all the volcano dataframes we generated too.
+
+# Proteins of Interest
+
+As we saw above, the CH-induced TETs held the most distinct proteome. Here we analyze which proteins are unique to each condition and which proteins may be shared between conditions of interest.
+
+```{r Unique Top 100 Proteins by Abundance, eval = F, message = FALSE}
+
+# import dataset
+Proteins_by_condition <- read_excel("/Users/tamto/Documents/TETs_Proteomics/Proteins_by_condition.xlsx", sheet = "All")
+                                    
+# create function for target column and comparison columns to find distinct proteins
+find_distinct_values <- function(df, target_column, comparison_columns) {
+  distinct_values <- df[[target_column]][!(df[[target_column]] %in% unlist(df[comparison_columns]))]
+  return(distinct_values)
+}
+
+distinct_Spon <- find_distinct_values(Proteins_by_condition, "Spontaneous", c("PMA", "CA", "CH"))
+distinct_PMA <- find_distinct_values(Proteins_by_condition, "PMA", c("Spontaneous", "CA", "CH"))
+distinct_CA <- find_distinct_values(Proteins_by_condition, "CA", c("Spontaneous", "PMA", "CH"))
+distinct_CH <- find_distinct_values(Proteins_by_condition, "CH", c("Spontaneous", "PMA", "CA"))
+
+
+# Here I'm combining them all into one data frame to export to an excel sheet
+max_length <- max(length(distinct_CA), length(distinct_CH), length(distinct_PMA), length(distinct_Spon))
+
+length(distinct_CA) <- max_length 
+length(distinct_CH) <- max_length 
+length(distinct_PMA) <- max_length 
+length(distinct_Spon) <- max_length 
+
+Top100_unique_proteins <- cbind(distinct_Spon, distinct_PMA, distinct_CA, distinct_CH)
+Top100_unique_proteins <- as.data.frame(Top100_unique_proteins)
+
+# write_xlsx(Top100_unique_proteins,"Top100_Unique_Proteins.xlsx")
+
+```
+
+Here we analyze which proteins are shared between variables of interest. 
+
+```{r Shared Proteins, eval = F, message = F}
+
+find_shared_proteins <- function(df, A, B, C, D) {
+  shared_proteins <- intersect(df[[A]], df[[B]])
+  not_in_others <- setdiff(shared_proteins, union(df[[C]], df[[D]]))
+  return(not_in_others)
+}
+
+# For example, finding similar proteins between CH and PMA conditions.
+shared_proteins_CA_CH <- find_shared_proteins(Proteins_by_condition, "CA", "CH", "Spontaneous", "PMA")
+
+shared_proteins_CA_CH
+
+# The output is the list of 46 proteins that are shared between the C. acnes-induced TETs.
+
+```
+
+
+# CONCLUSION
+
+Given what we received from this proteomics dataset, there's definitely a lot more analyses we can do (gene ontology, ingenuity pathway analysis, cellular component, etc.).
+
+From what we've seen in this project so far, however, different stimuli generate distinct TET protein compositions. We definitely see antimicrobial genes present such as granzymes, histones, annexins, etc. that are upregulated in TETs induced by healthy skin-associated C. acnes strains and play an important role in host defense. 
+
+By elucidating the differences in TET compositions, we can understand how the microbiome affects immune responses and identify novel targets for treatment against acne or other chronic inflammatory skin diseases.
+
+
